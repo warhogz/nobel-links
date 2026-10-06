@@ -180,6 +180,24 @@ export default function Shell({ children }: { children: ReactNode }) {
 
       const stepped = page.classList.contains("has-film") && chrome > 0;
       document.documentElement.classList.toggle("stepped", stepped);
+      /* What actually puts the city under the island is the top of the page
+         sitting ABOVE the window once it is parked at the foot of the range —
+         by `--chrome-b`, when the window is the small viewport and the page is
+         the large one. On the Safari this is now seen in, the window can be as
+         tall as the page, so a page whose content is no taller than the screen
+         parks with its top exactly on the window's top and Safari paints the
+         strip itself. The exhibition page never showed it only because its
+         office screen happened to run 25px past the screen. So the page makes
+         up whatever the window leaves short, and only that: where Safari
+         already leaves `--chrome-b` above, it adds nothing. Never taken back
+         while the screen is open, so a bar folding away cannot make it pump. */
+      if (stepped) {
+        const over = page.getBoundingClientRect().height - window.innerHeight;
+        if (over < chrome - 1) {
+          const had = parseFloat(page.style.getPropertyValue("--park-extra")) || 0;
+          page.style.setProperty("--park-extra", `${Math.ceil(had + chrome - over)}px`);
+        }
+      }
       const step = stepped ? document.querySelector(".lift")?.getBoundingClientRect().height ?? 0 : 0;
       /* On a phone, park at the FOOT of the scroll rather than on the page's
          own top. Measured on the device: parked at the page top the strip was
@@ -307,6 +325,7 @@ export default function Shell({ children }: { children: ReactNode }) {
           `doc ${document.documentElement.scrollHeight}  win ${window.innerHeight}`,
           `film top   ${film === undefined ? "-" : Math.round(film)}`,
           `snap       ${document.documentElement.classList.contains("stepped") ? "on" : "off"}`,
+          `extra      ${document.querySelector<HTMLElement>(".page")?.style.getPropertyValue("--park-extra") || "0"}`,
         ].join(String.fromCharCode(10)),
       );
     };

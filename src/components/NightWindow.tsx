@@ -42,6 +42,28 @@ let previous = 0;
 let elapsed = 0;
 let reduced: MediaQueryList | null = null;
 
+/*
+ * How tall the screen really is. Not `innerHeight`: on an iPhone that stops at
+ * the top of Safari's own bottom bar, and the bar is glass — the page goes on
+ * underneath it, and a room drawn only to `innerHeight` left a band of its
+ * flat fallback ground showing through the bar under an open position. The
+ * large viewport (`100lvh`) is the whole of what can be seen. Measured off a
+ * probe on a resize rather than every frame: it is a layout read.
+ */
+let screenHeight = 0;
+const measureScreen = () => {
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:absolute;top:0;left:0;width:0;height:100lvh;visibility:hidden;pointer-events:none";
+  document.body.appendChild(probe);
+  const lvh = probe.getBoundingClientRect().height;
+  probe.remove();
+  screenHeight = Math.max(window.innerHeight, lvh);
+};
+const onResize = () => {
+  screenHeight = 0;
+  wake();
+};
+
 function build() {
   if (room || unavailable) return room;
   const canvas = document.createElement("canvas");
@@ -88,8 +110,9 @@ function paint(time: number) {
     elapsed += (delta / 1000) * NIGHT_PACE;
   }
 
+  if (!screenHeight) measureScreen();
   const width = window.innerWidth;
-  const height = window.innerHeight;
+  const height = screenHeight;
   const scale = Math.min(1, LONGEST_EDGE / Math.max(width, height, 1));
   const { canvas, gl, field } = built;
   const roomWidth = Math.max(1, Math.round(width * scale));
@@ -154,12 +177,14 @@ export function NobelNightWindow({ open, linger = 0 }: { open: boolean; linger?:
     if (panes.size === 1) {
       reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
       document.addEventListener("visibilitychange", wake);
+      window.addEventListener("resize", onResize);
     }
     return () => {
       panes.delete(pane);
       paneRef.current = null;
       if (panes.size) return;
       document.removeEventListener("visibilitychange", wake);
+      window.removeEventListener("resize", onResize);
       tearDown();
     };
   }, []);

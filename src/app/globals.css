@@ -953,6 +953,9 @@ html.leaving .chrome-tint { background: var(--paper); }
    and what is needed is generous at one end and tight at the other. */
 .has-film {
   position: relative;
+  /* the large viewport, and whatever Shell's parking finds the window has
+     left short of putting the page's top above it (see `--park-extra`) */
+  min-height: calc(100lvh + var(--park-extra, 0px));
   --film-h: clamp(170px, min(46svh, 100svh - 430px), 470px);
   --zone: clamp(15px, 3.4svh, 38px);
 }
