@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NOBÉL — QR для заставки</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F1ECE4">
+<link rel="icon" href="assets/favicon-64.png" sizes="64x64">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&display=swap">
+<style>
+:root{
+  --paper:#F1ECE4; --paper-deep:#E6DFD4; --ink:#14120F;
+  --ink-70:rgba(20,18,15,.7); --ink-45:rgba(20,18,15,.45);
+  --bronze:#9F7A57; --line:rgba(20,18,15,.14);
+  --serif:"Bodoni Moda",Baskerville,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0; padding:34px 22px 64px;
+  background:
+    radial-gradient(110% 50% at 50% -8%, #FAF7F1, transparent 60%),
+    linear-gradient(180deg,#F5F1EA,var(--paper-deep));
+  min-height:100vh; color:var(--ink); font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:960px;margin:0 auto}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(30px,6vw,44px);line-height:1;margin:0 0 6px}
+.kicker{font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:var(--bronze);margin:0 0 18px}
+.sub{margin:0 0 30px;color:var(--ink-70);font-size:14px;line-height:1.6;max-width:56ch}
+
+.grid{display:grid;gap:30px;grid-template-columns:1fr}
+@media(min-width:860px){.grid{grid-template-columns:340px 1fr;align-items:start}}
+
+.panel{
+  padding:22px; border-radius:24px; border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.3));
+  box-shadow:0 1px 0 rgba(255,255,255,.85) inset, 0 20px 40px -34px rgba(20,18,15,.9);
+}
+label{display:block;font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-45);margin:0 0 8px}
+input,select{
+  width:100%; padding:13px 15px; border-radius:13px; font:inherit; font-size:14px;
+  border:1px solid var(--line); background:rgba(255,255,255,.75); color:var(--ink);
+  -webkit-appearance:none; appearance:none;
+}
+input:focus,select:focus{outline:none;border-color:var(--bronze);box-shadow:0 0 0 3px rgba(159,122,87,.14)}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--ink-45) 50%),linear-gradient(135deg,var(--ink-45) 50%,transparent 50%);
+  background-position:calc(100% - 19px) 21px,calc(100% - 14px) 21px;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.field+.field{margin-top:16px}
+.row{display:grid;gap:10px;margin-top:20px}
+
+.btn{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:15px 20px;border-radius:999px;border:1px solid var(--line);cursor:pointer;
+  background:linear-gradient(180deg,rgba(255,255,255,.8),rgba(255,255,255,.34));
+  font:inherit;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);
+  box-shadow:0 1px 0 rgba(255,255,255,.85) inset, 0 14px 26px -22px rgba(20,18,15,.8);
+  transition:transform .4s var(--ease),border-color .4s var(--ease);
+}
+.btn:hover{border-color:rgba(159,122,87,.55)}
+.btn:active{transform:scale(.985)}
+.btn.primary{background:linear-gradient(180deg,#201D19,#14120F);color:#F4F0E9;border-color:#14120F}
+.btn svg{flex:none;opacity:.7}
+
+.previews{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+.phone{
+  position:relative;width:250px;border-radius:38px;overflow:hidden;
+  box-shadow:0 40px 70px -34px rgba(20,18,15,.85), 0 0 0 1px rgba(20,18,15,.1);
+  background:var(--paper);
+}
+.phone canvas{display:block;width:100%;height:auto}
+.caption{margin-top:12px;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-45)}
+
+.steps{margin-top:30px;font-size:13px;line-height:1.75;color:var(--ink-70)}
+.steps h3{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--bronze);margin:0 0 10px;font-weight:600}
+.steps ol{margin:0;padding-left:20px}
+.steps li{margin-bottom:6px}
+.steps b{color:var(--ink);font-weight:600}
+.warn{margin-top:14px;padding:12px 15px;border-radius:14px;border:1px dashed rgba(159,122,87,.45);
+  background:rgba(159,122,87,.06);font-size:12.5px;line-height:1.6}
+.err{margin-top:14px;color:#8A2B2B;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="kicker">NOBÉL · внутренний инструмент</p>
+  <h1>QR для заставки телефона</h1>
+  <p class="sub">
+    Вставьте адрес страницы, выберите размер экрана и скачайте готовую заставку.
+    Код рассчитан с максимальной коррекцией ошибок — читается даже под углом, с бликом
+    и с трещиной на стекле.
+  </p>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="field">
+        <label for="url">Ссылка</label>
+        <input id="url" type="url" inputmode="url" spellcheck="false" placeholder="https://">
+      </div>
+      <div class="field">
+        <label for="size">Экран</label>
+        <select id="size">
+          <option value="1290x2796">iPhone 15/16 Pro Max · 1290 × 2796</option>
+          <option value="1179x2556">iPhone 15/16 Pro · 1179 × 2556</option>
+          <option value="1170x2532">iPhone 12–14 · 1170 × 2532</option>
+          <option value="1125x2436">iPhone X / XS / 11 Pro · 1125 × 2436</option>
+          <option value="1440x3200">Android (QHD+) · 1440 × 3200</option>
+          <option value="1080x2400">Android (FHD+) · 1080 × 2400</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="theme">Тема</label>
+        <select id="theme">
+          <option value="paper">Айвори — как сайт</option>
+          <option value="stone">Тёмный камень</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <button class="btn primary" id="dl-wall">Скачать заставку
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg>
+        </button>
+        <button class="btn" id="dl-qr">Только QR · PNG
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg>
+        </button>
+      </div>
+      <div class="err" id="err" hidden></div>
+    </div>
+
+    <div>
+      <div class="previews">
+        <div>
+          <div class="phone"><canvas id="wall"></canvas></div>
+          <div class="caption">Заставка — предпросмотр</div>
+        </div>
+        <div>
+          <div class="phone" style="width:186px;border-radius:22px"><canvas id="plain"></canvas></div>
+          <div class="caption">QR для печати</div>
+        </div>
+      </div>
+
+      <div class="steps">
+        <h3>Как поставить на iPhone</h3>
+        <ol>
+          <li>Скачайте заставку — она сохранится в «Фото».</li>
+          <li>Настройки → <b>Обои</b> → «Добавить новые обои» → <b>Фото</b> → выберите файл.</li>
+          <li>Отключите <b>эффект глубины</b> (иначе часы закроют код) и не добавляйте виджеты.</li>
+          <li>Поставьте только на <b>экран блокировки</b> — «Настроить экран блокировки».</li>
+        </ol>
+        <div class="warn">
+          Настройки → Уведомления → <b>Показ на заблокированном экране</b> → «Количество»:
+          иначе всплывающие уведомления перекроют код в самый нужный момент.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/qrcode.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   Draws a NOBÉL lock-screen wallpaper with a dot-matrix QR at its centre.
+   Everything is canvas — no server, no upload, works offline.
+   ═══════════════════════════════════════════════════════════════════════ */
+const $ = s => document.querySelector(s);
+const THEMES = {
+  paper: { bg1:"#F7F3EC", bg2:"#E4DCD0", ink:"#14120F", soft:"rgba(20,18,15,.45)",
+           bronze:"#9F7A57", card:"#FBF8F3", cardLine:"rgba(159,122,87,.35)", logo:"#14120F" },
+  stone: { bg1:"#1A1C21", bg2:"#0B0C0E", ink:"#F2EDE5", soft:"rgba(242,237,229,.5)",
+           bronze:"#C6A377", card:"#F4F0E9", cardLine:"rgba(198,163,119,.5)", logo:"#14120F" }
+};
+
+/* the ink mark, loaded once and painted onto the canvas */
+const mark = new Image();
+let markReady = false;
+mark.onload = () => { markReady = true; render(); };
+mark.src = "assets/nobel.svg";
+
+function modules(text) {
+  const qr = qrcode(0, "H");          /* highest error correction: a logo can sit on top */
+  qr.addData(text);
+  qr.make();
+  const n = qr.getModuleCount();
+  const m = [];
+  for (let r = 0; r < n; r++) { m[r] = []; for (let c = 0; c < n; c++) m[r][c] = qr.isDark(r, c); }
+  return m;
+}
+
+const isFinder = (r, c, n) =>
+  (r < 7 && c < 7) || (r < 7 && c >= n - 7) || (r >= n - 7 && c < 7);
+
+/* rounded-rect ring, used for the three corner eyes */
+function ring(ctx, x, y, s, w, rOut, rIn) {
+  ctx.beginPath();
+  ctx.roundRect(x, y, s, s, rOut);
+  ctx.roundRect(x + w, y + w, s - w * 2, s - w * 2, rIn);
+  ctx.fill("evenodd");
+}
+
+/* The QR itself: dots for the data, barely-softened squares for the eyes.
+   The corner radii below are deliberate — anything rounder than ~0.4 of a
+   module breaks the 1:1:3:1:1 ratio a scanner looks for, and the code stops
+   reading once the photo is small or blurred. Verified by decoding the render
+   at full size, 40%, 20% and under heavy blur. Do not round these further. */
+function drawQR(ctx, text, x, y, size, color, withLogo) {
+  const m = modules(text), n = m.length, u = size / n;
+  ctx.save();
+  ctx.fillStyle = color;
+
+  for (let r = 0; r < n; r++) {
+    for (let c = 0; c < n; c++) {
+      if (!m[r][c] || isFinder(r, c, n)) continue;
+      ctx.beginPath();
+      ctx.arc(x + (c + .5) * u, y + (r + .5) * u, u * .47, 0, 6.2832);
+      ctx.fill();
+    }
+  }
+  for (const [fr, fc] of [[0, 0], [0, n - 7], [n - 7, 0]]) {
+    ring(ctx, x + fc * u, y + fr * u, u * 7, u, u * .40, u * .25);
+    ctx.beginPath();
+    ctx.roundRect(x + (fc + 2) * u, y + (fr + 2) * u, u * 3, u * 3, u * .175);
+    ctx.fill();
+  }
+
+  if (withLogo && markReady) {
+    const w = size * .17, h = w * (mark.naturalHeight / mark.naturalWidth || .546);
+    const pad = size * .035, bw = w + pad * 2, bh = h + pad * 2;
+    const bx = x + (size - bw) / 2, by = y + (size - bh) / 2;
+    ctx.fillStyle = withLogo;
+    ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, pad); ctx.fill();
+    ctx.drawImage(mark, bx + pad, by + pad, w, h);
+  }
+  ctx.restore();
+}
+
+/* a faint tooth of paper grain so the flat fill never looks like a screenshot */
+function grain(ctx, w, h, alpha) {
+  const t = document.createElement("canvas"); t.width = t.height = 160;
+  const tc = t.getContext("2d"), d = tc.createImageData(160, 160);
+  for (let i = 0; i < d.data.length; i += 4) {
+    const v = 120 + Math.random() * 135;
+    d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255;
+  }
+  tc.putImageData(d, 0, 0);
+  ctx.save(); ctx.globalAlpha = alpha; ctx.globalCompositeOperation = "multiply";
+  const p = ctx.createPattern(t, "repeat");
+  ctx.fillStyle = p; ctx.fillRect(0, 0, w, h); ctx.restore();
+}
+
+function tracked(ctx, text, x, y, px, spacing, color, weight = "400") {
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.font = `${weight} ${px}px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif`;
+  ctx.textAlign = "left"; ctx.textBaseline = "middle";
+  const chars = [...text];
+  const w = chars.reduce((a, ch) => a + ctx.measureText(ch).width + spacing, -spacing);
+  let cx = x - w / 2;
+  for (const ch of chars) { ctx.fillText(ch, cx, y); cx += ctx.measureText(ch).width + spacing; }
+  ctx.restore();
+}
+
+/* ─────────────────────────────  wallpaper  ──────────────────────────── */
+function drawWallpaper(cv, url, W, H, theme) {
+  const T = THEMES[theme];
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext("2d");
+
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, T.bg1); g.addColorStop(1, T.bg2);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  const warm = ctx.createRadialGradient(W * .5, H * .12, 0, W * .5, H * .12, W * 1.1);
+  warm.addColorStop(0, theme === "stone" ? "rgba(198,163,119,.20)" : "rgba(255,255,255,.75)");
+  warm.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = warm; ctx.fillRect(0, 0, W, H);
+
+  /* grain goes down before anything else, so the code and the type stay clean —
+     a scanner reads a crisp code far better than a textured one */
+  grain(ctx, W, H, theme === "stone" ? .05 : .09);
+
+  /* the ink mark, held below the iOS clock and its widget row */
+  if (markReady) {
+    const lw = W * .30, lh = lw * (mark.naturalHeight / mark.naturalWidth || .546);
+    if (theme === "stone") {
+      ctx.save(); ctx.filter = "invert(1)";
+      ctx.drawImage(mark, (W - lw) / 2, H * .300 - lh / 2, lw, lh);
+      ctx.restore();
+    } else {
+      ctx.drawImage(mark, (W - lw) / 2, H * .300 - lh / 2, lw, lh);
+    }
+  }
+  tracked(ctx, "INTERIOR ARCHITECTURE", W / 2, H * .341, W * .0165, W * .0115, T.soft);
+
+  /* the card the code sits on */
+  const qs = W * .64;          /* big enough to scan across a stand, from a phone screen */
+  const pad = qs * .105;
+  const cw = qs + pad * 2;
+  const cx = (W - cw) / 2, cy = H * .525 - cw / 2;
+
+  ctx.save();
+  ctx.shadowColor = theme === "stone" ? "rgba(0,0,0,.6)" : "rgba(20,18,15,.28)";
+  ctx.shadowBlur = W * .07; ctx.shadowOffsetY = W * .022;
+  ctx.fillStyle = T.card;
+  ctx.beginPath(); ctx.roundRect(cx, cy, cw, cw, cw * .10); ctx.fill();
+  ctx.restore();
+
+  ctx.strokeStyle = T.cardLine; ctx.lineWidth = Math.max(1, W * .0016);
+  ctx.beginPath(); ctx.roundRect(cx + 2, cy + 2, cw - 4, cw - 4, cw * .10 - 2); ctx.stroke();
+
+  drawQR(ctx, url, cx + pad, cy + pad, qs, "#14120F", T.card);
+
+  tracked(ctx, "SCAN TO CONNECT", W / 2, cy + cw + H * .040, W * .020, W * .014, T.bronze, "500");
+
+  const host = url.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  tracked(ctx, host.toUpperCase(), W / 2, cy + cw + H * .066, W * .0155, W * .0085, T.soft);
+
+  /* the studio and its cities, held at the bottom but above the iOS shortcut row */
+  tracked(ctx, "INTERIOR ARCHITECTURE", W / 2, H * .848, W * .0165, W * .0105, T.soft);
+  tracked(ctx, "LOS ANGELES · DUBAI · WARSAW", W / 2, H * .875, W * .0150, W * .0125, T.bronze);
+}
+
+/* ────────────────────────────  plain code  ──────────────────────────── */
+function drawPlain(cv, url) {
+  const S = 1600, q = S * .86, o = (S - q) / 2;
+  cv.width = cv.height = S;
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#F7F3EC"; ctx.fillRect(0, 0, S, S);
+  drawQR(ctx, url, o, o, q, "#14120F", "#F7F3EC");
+}
+
+/* ──────────────────────────────  wiring  ────────────────────────────── */
+function render() {
+  const url = ($("#url").value || "").trim();
+  const err = $("#err");
+  if (!url) { err.hidden = false; err.textContent = "Введите адрес страницы."; return; }
+  const [W, H] = $("#size").value.split("x").map(Number);
+  try {
+    drawWallpaper($("#wall"), url, W, H, $("#theme").value);
+    drawPlain($("#plain"), url);
+    err.hidden = true;
+  } catch (e) {
+    err.hidden = false;
+    err.textContent = "Ссылка слишком длинная для QR — сократите адрес.";
+  }
+}
+
+function save(cv, name) {
+  cv.toBlob(b => {
+    const u = URL.createObjectURL(b);
+    const a = Object.assign(document.createElement("a"), { href: u, download: name });
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(u), 4000);
+  }, "image/png");
+}
+
+$("#dl-wall").addEventListener("click", () =>
+  save($("#wall"), `NOBEL-links-${$("#size").value}-${$("#theme").value}.png`));
+$("#dl-qr").addEventListener("click", () => save($("#plain"), "NOBEL-links-qr.png"));
+
+["url", "size", "theme"].forEach(id => {
+  $("#" + id).addEventListener("input", render);
+  $("#" + id).addEventListener("change", render);
+});
+
+/* start from wherever this tool is served, minus the /qr.html */
+$("#url").value = location.href.replace(/qr\.html.*$/, "");
+render();
+</script>
+</body>
+</html>

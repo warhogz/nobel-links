@@ -1,0 +1,524 @@
+/*
+ * A position on the list (see Position.tsx for how the room opens behind it)
+ * — the main site's vacancy-position stylesheet, as it is there.
+ *
+ * The line is laid out twice on the same grid: once in ink, as the page reads
+ * it, and once in light over the room, cut by the same circle, so the type
+ * turns exactly where the room is. The details are only ever seen inside the
+ * room, so they are written in light alone.
+ */
+
+@property --lit-r { syntax: "<length>"; inherits: true; initial-value: 0px; }
+
+.position {
+  --columns: 2.4fr 1.8fr 1.8fr 1fr 36px;
+  --gap: 2vw;
+  --gutter: 6.25vw;
+  --light: #fff;
+  --light-soft: rgb(255 255 255 / 70%);
+  --lit-x: 0px;
+  --lit-y: 0px;
+  --lit-delay: 0ms;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  border-top: 1px solid var(--line);
+  /* Opening: off the mark as soon as the hand is there, and slow to arrive. */
+  transition: --lit-r 1200ms cubic-bezier(0.3, 0.6, 0.2, 1), border-color 500ms ease;
+}
+
+/* Closing: eased in and out, at the pace the rest of the site takes its
+   leave. */
+.position[data-room="gather"] {
+  transition: --lit-r 950ms cubic-bezier(0.65, 0, 0.35, 1) var(--lit-delay), border-color 700ms ease;
+}
+
+.position:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+/* The rules either side of a lit position take the wine. */
+.position[data-shown],
+.position[data-shown] + .position {
+  border-top-color: var(--nobel-burgundy);
+}
+
+.position[data-shown]:last-child {
+  border-bottom-color: var(--nobel-burgundy);
+}
+
+/* The dark room, seen through the circle. Its own ground is what stands in
+   for the room where the room cannot be drawn. */
+.room {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  background: var(--nobel-dark-surface);
+  clip-path: circle(var(--lit-r) at var(--lit-x) var(--lit-y));
+  pointer-events: none;
+}
+
+/* ── The line ─────────────────────────────────────────────────────────── */
+
+.row {
+  display: grid;
+  grid-template-columns: var(--columns);
+  align-items: center;
+  gap: var(--gap);
+  padding: 1.35vw var(--gutter) 1.45vw;
+}
+
+.line {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: clamp(105px, 10.5vw, 202px);
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* The room is the focus: it opens from the toggle for a keyboard, with a rule
+   drawn inside it. */
+.line:focus-visible {
+  outline: none;
+}
+
+/* The line again, in light, over the room and cut by the same circle. */
+.ink {
+  position: absolute;
+  inset: 0;
+  color: var(--light);
+  clip-path: circle(var(--lit-r) at var(--lit-x) var(--lit-y));
+  pointer-events: none;
+}
+
+.line:focus-visible .ink {
+  outline: 1px solid rgb(255 255 255 / 40%);
+  outline-offset: -10px;
+}
+
+.title {
+  max-width: 25ch;
+  font-size: clamp(22px, 1.65vw, 32px);
+  line-height: 1.08;
+  /* Underlined only under the hand. */
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.14em;
+  transition: text-decoration-color 320ms ease;
+}
+
+.line:focus-visible .title {
+  text-decoration-color: currentColor;
+}
+
+@media (hover: hover) {
+  .line:hover .title {
+    text-decoration-color: currentColor;
+  }
+}
+
+.meta {
+  font-family: var(--font-nobel);
+  font-size: clamp(12px, 0.78vw, 16px);
+  font-weight: 400;
+}
+
+.ink .meta {
+  color: var(--light-soft);
+}
+
+.toggle {
+  position: relative;
+  display: block;
+  width: 34px;
+  height: 34px;
+  justify-self: end;
+  border: 1px solid #aaa;
+  border-radius: 50%;
+  color: #777;
+  transition: background-color 500ms ease, border-color 500ms ease, color 500ms ease;
+}
+
+/* The plus as two strokes, so the upright one can lie down into the minus. */
+.toggle::before,
+.toggle::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 1px;
+  margin: -0.5px 0 0 -6px;
+  background: currentColor;
+  content: "";
+  transition: transform 650ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.toggle::after {
+  transform: rotate(90deg);
+}
+
+.position[data-open] .toggle::after {
+  transform: rotate(180deg);
+}
+
+.position[data-open] .toggle {
+  border-color: var(--nobel-burgundy);
+  background: var(--nobel-burgundy);
+  color: #fff;
+}
+
+.ink .toggle {
+  border-color: rgb(255 255 255 / 55%);
+  color: var(--light);
+}
+
+.position[data-open] .ink .toggle {
+  border-color: var(--light);
+  background: var(--light);
+  color: #171717;
+}
+
+/* ── The details ──────────────────────────────────────────────────────── */
+
+/* Let down from under the line, the height of what is in it. */
+.drawer {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 620ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.position[data-open] .drawer {
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 850ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.drawerInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Arrives a beat after the drawer starts down, and is the first thing to go
+   when it goes back up — before the room closes over where it was. */
+.details {
+  --rule: rgb(255 255 255 / 17%);
+  --faint: rgb(255 255 255 / 46%);
+  display: grid;
+  grid-template-columns: var(--columns);
+  align-items: stretch;
+  gap: var(--gap);
+  padding: clamp(4px, 0.5vw, 10px) var(--gutter) clamp(34px, 3.4vw, 60px);
+  color: var(--light);
+  font-family: var(--font-nobel);
+  opacity: 0;
+  transform: translate3d(0, -12px, 0);
+  transition: opacity 260ms ease, transform 520ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.position[data-open] .details {
+  opacity: 1;
+  transform: none;
+  transition: opacity 700ms ease 220ms, transform 900ms cubic-bezier(0.22, 1, 0.36, 1) 140ms;
+}
+
+/* Under the title: what the role is, and the way on to the form, kept down
+   level with the foot of the lists beside it. */
+.lead {
+  display: flex;
+  grid-column: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(28px, 3vw, 52px);
+}
+
+.summary {
+  max-width: 30ch;
+  margin: 0;
+  color: var(--light-soft);
+  font-size: clamp(14px, 0.95vw, 17px);
+  line-height: 1.45;
+}
+
+/* Who the position is for, under the mode and the place; what the studio
+   gives back, under the type. */
+.needs {
+  grid-column: 2 / span 2;
+}
+
+.offers {
+  grid-column: 4 / -1;
+}
+
+.label {
+  margin: 0 0 clamp(12px, 1vw, 18px);
+  color: var(--faint);
+  font-size: clamp(12px, 0.78vw, 15px);
+}
+
+.needList,
+.offerList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.needList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--gap);
+}
+
+.needList li,
+.offerList li {
+  position: relative;
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition: opacity 200ms ease, transform 420ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.needList li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  padding: clamp(12px, 0.95vw, 18px) 1em clamp(16px, 1.3vw, 24px) 0;
+  font-size: clamp(15px, 1.05vw, 20px);
+  line-height: 1.25;
+}
+
+/* A last requirement left on its own takes the whole row, rule and all. */
+.needList li:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.count {
+  color: var(--faint);
+  font-size: clamp(11px, 0.68vw, 13px);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+.offerList li {
+  padding: clamp(10px, 0.75vw, 14px) 0;
+  color: var(--light-soft);
+  font-size: clamp(13px, 0.85vw, 16px);
+  line-height: 1.35;
+}
+
+.offerList small {
+  display: block;
+  margin-top: 0.2em;
+  color: var(--faint);
+  font-size: 0.86em;
+}
+
+/* The rule over each line, drawn in from the left as the line arrives. */
+.needList li::before,
+.offerList li::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--rule);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 300ms ease;
+}
+
+.position[data-open] .needList li,
+.position[data-open] .offerList li {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 700ms ease calc(300ms + var(--i) * 55ms),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1) calc(240ms + var(--i) * 55ms);
+}
+
+.position[data-open] .needList li::before,
+.position[data-open] .offerList li::before {
+  transform: none;
+  transition: transform 1100ms cubic-bezier(0.22, 1, 0.36, 1) calc(260ms + var(--i) * 55ms);
+}
+
+.apply {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.4rem;
+  border: 1px solid rgb(255 255 255 / 45%);
+  border-radius: 999px;
+  padding: 0.95rem 1.4rem;
+  font-family: var(--font-nobel);
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 260ms ease, border-color 260ms ease, color 260ms ease;
+}
+
+.apply span {
+  font-size: 15px;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.apply:hover,
+.apply:focus-visible {
+  border-color: var(--light);
+  background: var(--light);
+  color: #171717;
+}
+
+.apply:hover span,
+.apply:focus-visible span {
+  transform: translate3d(4px, 0, 0);
+}
+
+.details .apply:focus-visible {
+  outline: 1px solid var(--light);
+  outline-offset: 4px;
+}
+
+/* ── Screens ──────────────────────────────────────────────────────────── */
+
+@media (min-width: 701px) {
+  .line {
+    min-height: clamp(118px, 11vh, 172px);
+  }
+}
+
+@media (min-width: 701px) and (max-width: 900px) {
+  .position {
+    --columns: 2fr 1.25fr 1.25fr 1fr 34px;
+    --gap: 1.6vw;
+  }
+
+  .title {
+    font-size: clamp(19px, 2.4vw, 26px);
+  }
+
+  .meta {
+    font-size: 12px;
+  }
+
+  /* Too narrow for the role to stand beside the lists: it goes over them,
+     with the way on to the form across from it. */
+  .lead {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: flex-end;
+    padding-bottom: 0.6rem;
+  }
+
+  .needs {
+    grid-column: 1 / span 3;
+  }
+}
+
+@media (max-width: 700px) {
+  .position {
+    --gutter: 1.25rem;
+  }
+
+  .row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.8rem 1rem;
+    padding: 1.3rem var(--gutter);
+  }
+
+  .line {
+    min-height: 154px;
+  }
+
+  .title {
+    grid-column: 1;
+    font-size: 20px;
+  }
+
+  .toggle {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .meta {
+    font-size: 12px;
+  }
+
+  .mode { grid-column: 1; grid-row: 2; }
+  .location { grid-column: 1; grid-row: 3; }
+  .type { grid-column: 1; grid-row: 4; }
+
+  /* One column, read down: the role, who it is for, what is offered, and
+     only then the way on to the form. */
+  .details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.9rem;
+    padding: 0 var(--gutter) 1.9rem;
+  }
+
+  .lead {
+    display: contents;
+  }
+
+  .summary {
+    font-size: 14px;
+  }
+
+  .needList {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .needList li {
+    display: grid;
+    grid-template-columns: 2.4em minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0;
+    padding: 0.8rem 0 0.9rem;
+    font-size: 15px;
+  }
+
+  .offerList li {
+    padding: 0.65rem 0;
+    font-size: 13px;
+  }
+
+  .apply {
+    order: 1;
+    align-self: flex-start;
+    margin-top: -0.3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .position,
+  .position[data-room="gather"],
+  .drawer,
+  .position[data-open] .drawer,
+  .details,
+  .position[data-open] .details,
+  .needList li,
+  .offerList li,
+  .position[data-open] .needList li,
+  .position[data-open] .offerList li,
+  .needList li::before,
+  .offerList li::before,
+  .position[data-open] .needList li::before,
+  .position[data-open] .offerList li::before,
+  .toggle,
+  .toggle::before,
+  .toggle::after,
+  .apply,
+  .apply span {
+    transition: none;
+  }
+}

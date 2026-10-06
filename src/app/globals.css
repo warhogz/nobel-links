@@ -1,0 +1,1117 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NOBÉL — LINKS
+
+   Warm paper, ink type, hairline rules. Nothing is textured: every surface is
+   a flat tone or a gradient, and every motion is a mask, a fade or a slide.
+
+   The frame — the wall, the bar, the curtain between screens, the one-screen
+   page — is this site's own. What is set on it is the main site's design
+   system, nobeldesignstudio.com, one to one: its face, its sizes, its
+   hairlines, its arrows, its vacancy line and the dark room behind it. A
+   vertical rhythm (--sp-* and the three fluid gaps) holds them together, and
+   if a value here is arbitrary it is a mistake.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  --color-paper: #dededc;
+  --color-ink: #12110f;
+  --color-bronze: #9f7a57;
+}
+
+:root {
+  /* ── paper and ink ───────────────────────────────────────────────────
+     Lifted from the main site so the two read as one brand: --background,
+     --foreground, --surface, --surface-border and --hero-accent there are
+     --paper, --ink, --chip, --hair and --accent here. */
+  --paper: #dededc;
+  --paper-rgb: 222, 222, 220;
+  --paper-top: #f8f8f7;
+  --paper-low: #cfcfcd;
+  --ink: #12110f;
+  --ink-78: rgba(18, 17, 15, 0.78);
+  --ink-72: rgba(18, 17, 15, 0.7);
+  --ink-46: rgba(18, 17, 15, 0.46);
+  --ink-26: rgba(18, 17, 15, 0.22);
+  --hair: rgba(18, 17, 15, 0.12);
+  --hair-soft: rgba(18, 17, 15, 0.07);
+  --chip: rgba(255, 255, 255, 0.72);
+  --lift: rgba(255, 255, 255, 0.5);
+  --burgundy: #702c3d;
+  --burgundy-rgb: 112, 44, 61;
+  --burgundy-soft: #dfbdc5;
+  --accent: #9f7a57;
+  --bronze: #9f7a57;
+  --cream: #f2ece4;
+
+  /* ── the main site's own tokens, under its own names ─────────────────
+     (src/app/globals.css and the vacancy and contact stylesheets there) */
+  --nobel-burgundy: #702c3d;
+  --nobel-dark-surface: radial-gradient(ellipse at 100% 100%, #422b33 0%, transparent 68%), linear-gradient(145deg, #191819, #242023);
+  --ink-soft: rgba(23, 23, 23, 0.74);
+  --muted: #777;
+  /* its contact rules, a shade lighter: on this wall the vignette darkens the
+     paper toward the edges, and the main site's #d8d8d8 disappears there */
+  --line: rgba(27, 27, 27, 0.18);
+
+  /* ── vertical rhythm ───────────────────────────────────────────────── */
+  --sp-1: clamp(5px, 0.95svh, 8px);
+  --sp-2: 12px;
+  --sp-3: 18px;
+  --sp-4: 26px;
+  --sp-5: 38px;
+  --sp-6: 56px;
+
+  /* ── the only three gaps that scale with the screen ──────────────────
+     Each is a share of the height the page actually gets, and that height is
+     `svh` — the viewport with the browser's own chrome showing. It used to be
+     `vh`, which is the viewport WITHOUT it. On iOS Safari the two differ by
+     about a hundred pixels, so the gaps were being cut from 852 while the
+     page had to fit into 740: the screen came out squeezed there and nowhere
+     else, because on a desktop browser the two units are the same number.
+     The plain-vh line above each is the fallback for anything older. */
+  --lead-in: clamp(9px, 2.7vh, 34px); /* header → the first line of a screen */
+  --lead-in: clamp(9px, 2.7svh, 34px);
+  --sep: clamp(15px, 3.9vh, 44px); /* block → block inside one zone */
+  --sep: clamp(15px, 3.9svh, 44px);
+  --zone: clamp(18px, 4.7vh, 54px); /* zone → zone: the hero to the actions */
+  --zone: clamp(18px, 4.7svh, 54px);
+
+  /* ── shape ─────────────────────────────────────────────────────────── */
+  --r-chip: 999px; /* an action */
+  --r-card: 20px; /* a picture or a place */
+  --r-inner: 12px; /* anything nested inside one of those */
+
+  /* The exhibition page's gutter, on every screen: the first screen's phrase
+     is set on exactly the column it had there, and everything else stands on
+     the same edge as it. At 375px it is 22.5px — which is also --s2 below. */
+  --gutter: clamp(22px, 6vw, 56px);
+
+  /* ── ONE SCALE, FOR TYPE AND FOR SPACE ──────────────────────────────────
+     A perfect fourth: every step is 4/3 of the one below it. The base is the
+     caption under the first screen's phrase — the exhibition page's own
+     `clamp(12.1px, 3.3vw, 14.4px)` — and the phrase itself already sits on
+     the scale, five steps up (51.5px against --s5's 52px at 375). So the one
+     thing kept exactly as it was decides every other size on the site.
+
+       --s-1   9.3   tracked caps, a figure beside a name
+       --s0   12.4   captions, labels, the time, anything read second
+       --s1   16.5   a line of the sheet; the air inside a line
+       --s2   22     a name on a list; the gutter
+       --s3   29.3   an office's name; the air between blocks
+       --s4   39     the gap before a list
+       --s5   52     the first screen's phrase
+       --s6   69.5   a screen's own name, where the width allows it
+
+     (px at 375 wide). Sizes and distances are both read off it, so a gap is
+     always in proportion to the type it separates. */
+  --s0: clamp(12.1px, 3.3vw, 14.4px);
+  --s-1: calc(var(--s0) * 0.75);
+  --s1: calc(var(--s0) * 1.3333);
+  --s2: calc(var(--s0) * 1.7778);
+  --s3: calc(var(--s0) * 2.3704);
+  --s4: calc(var(--s0) * 3.1605);
+  --s5: calc(var(--s0) * 4.2140);
+  --s6: calc(var(--s0) * 5.6187);
+  /* the main site's one curve */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  /* --ease is so front-loaded that a staggered set finishes almost together:
+     at a quarter of its time it is nine tenths done. Anything meant to be read
+     as one-after-another needs a curve that actually spends its duration. */
+  --ease-word: cubic-bezier(0.28, 0.5, 0.22, 1);
+
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  /* The real height of the bar, measured by Shell into `--bar-h`. It was a
+     70px guess against a 107px bar once, which put the top of the headline
+     underneath the header — and the number moves with the notch, the font and
+     the height-driven padding the bar carries, so no constant is right on
+     every device. The calc is only what stands until the first measurement. */
+  --bar: var(--bar-h, calc(var(--safe-t) + clamp(68px, 9svh, 82px)));
+  /* How much of the screen the browser's own bars are covering right now:
+     the large viewport less the small one. Zero everywhere except iOS. */
+  --chrome-b: calc(100lvh - 100svh);
+}
+
+/* How far a piece of text is through arriving. Registered so the browser can
+   interpolate it on the compositor; 1 by default, so anything the reveal never
+   reaches renders settled rather than burgundy. */
+@property --burn { syntax: "<number>"; inherits: true; initial-value: 1; }
+/* The main site's headline write-in (see FillText). Registered for the same
+   reason: so the stylesheet's transition can carry it from 0 to 1. */
+@property --fill { syntax: "<number>"; inherits: true; initial-value: 0; }
+
+* { box-sizing: border-box; }
+/* The canvas — everything outside the page box, including whatever an elastic
+   overscroll pulls into view — takes its colour from here. Stated rather than
+   inherited from `body`, so there is no moment and no browser in which the
+   default white can show. It is the gradient's own base tone, so where the
+   wall does not reach, what is there is the colour the wall is built on. */
+html {
+  -webkit-text-size-adjust: 100%;
+  background-color: var(--paper);
+  /* The clipping lives here rather than on `body`, and that is not cosmetic:
+     an overflow other than `visible` makes an element a scroll container, and
+     a snap area only snaps inside its NEAREST one. With this on `body`, the
+     page's snap point belonged to a box that never scrolls, and the snapping
+     below would have been dead on arrival. */
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  /* the wall below is absolute against this */
+  position: relative;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-nobel), "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  /* The studio's face is loaded in the one weight it is drawn in. Anything set
+     heavier would otherwise be thickened by the browser into a face that is
+     not the studio's, and read as a second typeface — the main site's rule. */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+body.locked { overflow: hidden; }
+
+
+/* ── keyboard only ────────────────────────────────────────────────────────
+   `:focus-visible` never fires for a tap or a click, so none of this is ever
+   seen by the audience this screen was built for — and somebody arriving by
+   keyboard can see where they are, which until now they could not. In the
+   accent, like everything else that arrives here. */
+:focus-visible {
+  outline: 2px solid rgba(var(--burgundy-rgb), 0.85);
+  outline-offset: 3px;
+}
+.icon-btn:focus-visible { outline-offset: 2px; }
+
+a { color: inherit; text-decoration: none; }
+img, video { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+
+
+/* ══════════════════════════  the wall  ══════════════════════════ *
+ * The main site's own grey scene — its base, its pool of light and its
+ * vignette, gradient for gradient. What is different here is the amount of
+ * movement: over there the pool answers a pointer and idles by four pixels,
+ * which on a phone is nothing at all. Here it travels, so the light is
+ * something you see move without waiting for it.                           */
+/* NOT fixed, and that is the whole point.
+   iOS Safari keeps fixed layers inside the SMALL viewport — the area between
+   its bars — and will not let them under, however much overscan they carry.
+   The proof was already on the screen: the stand bleeds under the bottom bar
+   and shows, and it is ordinary content inside a page that is `100lvh` tall.
+   The wall was fixed, so it stopped at the bar and a strip of flat colour was
+   left over. Absolute against the body, it is content like any other and goes
+   where the stand goes. It scrolls with the page — by the height of a toolbar
+   at most, on a gradient with no fixed features, which is not a thing anyone
+   can see. */
+/* ── WHAT SAFARI READS TO TINT ITS OWN STRIP ──────────────────────────────
+   Safari 26 stopped honouring `theme-color`. It now takes the colour for the
+   strip around the status bar from the `background-color` of a FIXED element
+   near that edge, and failing that from `body` — and it PAINTS that colour
+   there. Page pixels do not appear in the strip while the document is at the
+   top of its scroll, whatever `viewport-fit` says. So the film cannot be
+   shown up there by anybody; what it can do is hand over its own colour.
+
+   This is a fixed band exactly the height of the inset Safari paints over —
+   so a person never sees it, and the sampler cannot miss it. `--chrome-t` is
+   the paper tone everywhere except an office screen, where the film sets it
+   to the tone of its own sky. Without a notch the inset is zero and so is
+   this element. */
+/* ── THE PAGE STANDS ONE STEP UP, AND STAYS THERE ─────────────────────────
+   Safari only lets the page's own pixels under the status bar once the
+   document is NOT at zero scroll. At zero it paints a colour over that strip
+   instead. A visitor scrolls nothing here — every screen is one screen — so
+   left alone the site would sit in the one position where the film can never
+   reach the top.
+
+   So the document starts with a step: a band above the page, as tall as twice
+   the inset Safari covers, and the page begins after it. The view is parked at
+   the top of the PAGE rather than the top of the document, which looks exactly
+   as it did — the film still starts at the first line of the screen — except
+   that the scroll is no longer zero, and the city gets the strip.
+
+   The step is self-gating: `env()` is 0 where there is no notch, so this is
+   nothing at all on a desktop or an Android. And `scroll-snap` is what keeps
+   it: pull the page down and it comes back to the page's own top, because
+   that is the only snap point in the document. */
+/* Mandatory, not proximity: the point of the step is that the page RESTS one
+   above zero, and proximity lets a rest position drift back to the top and the
+   strip go flat again. There is exactly one snap point in the document — the
+   top of the page — and it is where the page is meant to be. Nothing is lost
+   by holding it there: the only scroll any screen has is this step and the
+   runway under it, and there is nothing in either. */
+html.stepped { scroll-snap-type: y mandatory; }
+/* NOT `env(safe-area-inset-top)`. Measured on the phone this is for: that
+   value is ZERO in Safari there, while the bottom inset reads 27-31. The
+   browser does not hand the page the area under the status bar at all, even
+   with `viewport-fit: cover` — so a step built on it was zero, and none of
+   this ever armed.
+   `--chrome-b` is `100lvh - 100svh`: the height of the chrome the browser
+   retracts, which is the one number that is real on a phone and zero
+   everywhere else. Two and a half of those is a step big enough to be
+   unmistakably off zero and still nothing anyone sees, because the view is
+   parked past it. */
+.lift {
+  /* nothing at all, except on a screen with a film. Everywhere else the page
+     sits where it always sat: the step, the parking, the snapping and the
+     locked overscroll are the price of putting a city under the status bar,
+     and only that screen is buying anything with them. */
+  height: 0;
+  /* Pull the page down hard enough and this is what comes into view. It is
+     the tone of whatever the screen leads with — the film's own sky on an
+     office screen, the paper everywhere else — so what a hard pull reveals
+     goes on looking like the top of the page rather than a band of nothing.
+     Above the wall, which is absolute and would otherwise paint over it. */
+  position: relative; z-index: 1;
+  background: var(--chrome-t, var(--paper));
+}
+/* And better still, do not let it be reached. The bounce past the ends of the
+   document has nothing to show here — every screen is one screen — and the
+   page holds its place instead of rubber-banding off it. Only where the step
+   exists, so a window that genuinely scrolls keeps its own behaviour. */
+html.stepped .lift { height: calc(var(--chrome-b) * 2.5); }
+html.stepped, html.stepped body { overscroll-behavior-y: none; }
+/* EVERY screen rests at the foot of the range, because that is the position —
+   measured on the device — where the browser stops painting its own strip and
+   lets the page have the top of the phone. Not "any non-zero scroll": the
+   page's own top, at 100, still got the strip; the foot of the range, at 140,
+   did not.
+   Resting there means the page's first `--chrome-b` pixels are above the
+   window, which is exactly what puts them in the strip — the film on an
+   office screen, the gradient everywhere else. The composition pays nothing
+   for it, because the same `--chrome-b` is added back as padding below. */
+.page { scroll-snap-align: end; }
+
+.chrome-tint {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1;
+  /* A minimum of 3px, because on the phone this is for the top inset is 0 and
+     a band of no height is nothing for the sampler to find — which is why the
+     strip kept falling back to the body's tone instead of taking the film's.
+     Three pixels is invisible by construction: its colour is the colour of
+     whatever it is lying on. */
+  height: max(env(safe-area-inset-top, 0px), 3px);
+  background: var(--chrome-t, var(--paper));
+  pointer-events: none;
+}
+/* only ever on screen behind `?debug` — see Shell. Parked in the middle
+   rather than at an edge, because a coloured box at an edge is the very thing
+   Safari reads to tint its strips. */
+.debug {
+  position: fixed; top: 36%; left: 12px; z-index: 300;
+  margin: 0; padding: 9px 11px; border-radius: 9px;
+  background: rgba(255, 255, 255, 0.93); color: #12110f;
+  font: 11px/1.5 ui-monospace, Menlo, Consolas, monospace;
+  white-space: pre; pointer-events: none;
+}
+
+/* AND NOTHING AT THE FOOT. There was a probe down there for a while and it
+   was a mistake: at the bottom the page does not need a colour handed to it,
+   because the page itself reaches under the bar — that is what `100lvh` and
+   an absolute wall were for, and it is the whole reason the strips went away
+   in the first place. A fixed band of colour at that edge covers exactly the
+   pixels the browser would otherwise have shown, and hands back the line.
+   What had to go instead was the colour on the things that were already down
+   there without meaning to be: the sheet and the toast, both fixed, both
+   carrying a background while hidden. Those are fixed. This stays empty. */
+
+.paper {
+  position: absolute; left: 0; right: 0; z-index: 0; pointer-events: none;
+  overflow: hidden;
+  /* Deliberately larger than any viewport it can be asked to cover. A fixed
+     layer is laid out against the large viewport, so `inset: 0` already
+     reaches the bottom of the screen with Safari's bars hidden — but while
+     they are ANIMATING, and while the page is rubber-banding, Safari shifts
+     fixed layers, and an edge that sits exactly on the boundary comes into
+     view. 10vh of overscan at each end puts the edges somewhere they cannot
+     be reached. It costs a fifth more fragments in the shader and changes the
+     gradient's framing by an amount no one can see. */
+  /* Overscan above only. Being absolute, the foot of this already lands on
+     the foot of the document — which is under the bottom bar, because the
+     page is `100lvh` — so a bottom overscan would buy nothing and cost a
+     document 10vh taller than the screen, i.e. a scrollbar out of nowhere.
+     Above the origin nothing scrolls, so that end is free. */
+  top: -10vh;
+  height: calc(100% + 10vh);
+  /* No background on the fixed element itself. Safari 26 reads the
+     background-color off fixed layers near the edges to tint its bars, and a
+     flat colour read from here is exactly the strip that does not match the
+     gradient it sits against. The base tone moved into the layer below, where
+     the browser does not look. */
+  background: transparent;
+}
+.paper::before, .paper::after { content: ""; position: absolute; will-change: transform; }
+.paper::before {
+  inset: -22vh -20vw;
+  background:
+    radial-gradient(ellipse 42% 74% at 50% 46%, rgba(255, 255, 255, 0.99) 0%, rgba(255, 255, 255, 0.93) 32%, rgba(255, 255, 255, 0.52) 58%, transparent 82%),
+    radial-gradient(ellipse 90% 86% at 50% 48%, transparent 43%, rgba(111, 111, 109, 0.08) 72%, rgba(54, 54, 53, 0.16) 100%),
+    linear-gradient(106deg, #e9e9e7 0%, #f8f8f7 39%, #eeeeec 63%, #cfcfcd 100%);
+  background-color: var(--paper);
+  animation: paperDrift 22s var(--ease-soft) infinite alternate;
+}
+/* and a second, narrower pass of light crossing the first */
+.paper::after {
+  inset: -30% -80%;
+  background: linear-gradient(
+    98deg,
+    rgba(255, 255, 255, 0) 34%,
+    rgba(255, 255, 255, 0.38) 44%,
+    rgba(255, 255, 255, 0.62) 50%,
+    rgba(255, 255, 255, 0.38) 56%,
+    rgba(255, 255, 255, 0) 66%
+  );
+  animation: paperShaft 17s var(--ease-soft) infinite alternate;
+}
+@keyframes paperDrift {
+  from { transform: translate3d(-7%, -5%, 0) scale(1.05); }
+  to   { transform: translate3d(7%, 5%, 0) scale(1.22); }
+}
+@keyframes paperShaft {
+  from { transform: translate3d(-26%, 0, 0); }
+  to   { transform: translate3d(26%, 0, 0); }
+}
+/* And over the top of all that, the same wall as a shader — grey and white
+   actually flowing through each other rather than one fixed shape sliding
+   about. The two pools below step aside once its first frame is up, exactly
+   the way the inline room hands over to its canvas; without WebGL they simply
+   stay, and the page is the one it always was. */
+.paper-flow {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  display: block; opacity: 0;
+  transition: opacity 0.9s var(--ease-soft);
+}
+.paper.flowing .paper-flow { opacity: 1; }
+.paper.flowing::before, .paper.flowing::after {
+  opacity: 0;
+  /* and then OUT of the compositor altogether — an opacity of 0 is still a
+     full-screen layer being blended every frame. Visibility waits for the
+     fade to finish, so the handover still reads; `will-change` goes with it,
+     because the promise of a transform nobody is going to make is just a
+     layer held open. If the canvas is ever lost the class comes off and both
+     of them come straight back. */
+  visibility: hidden;
+  will-change: auto;
+  transition: opacity 0.9s var(--ease-soft), visibility 0s linear 0.9s;
+  /* frozen rather than cleared: they are invisible now, and two full-screen
+     layers should not go on animating their transforms behind the canvas */
+  animation-play-state: paused;
+}
+/* a whisper of grain keeps the big gradients from banding on cheap panels */
+/* Inside the wall rather than fixed beside it: one fewer fixed layer at the
+   edges for Safari to read a colour from. It looks identical — it only ever
+   covered the wall. */
+.paper-grain {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  opacity: 0.03; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+}
+
+/* ══════════════════════════  top bar  ══════════════════════════ */
+.bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+  /* its own side padding, not the page's gutter: the bar is the frame, and
+     it stands where it always stood */
+  padding: calc(var(--safe-t) + clamp(7px, 1.3svh, 11px)) clamp(22px, 6vw, 56px) clamp(6px, 1.1svh, 9px);
+  display: grid; grid-template-columns: 40px 1fr 40px; align-items: center;
+}
+.bar > *:not(.bar-veil) { position: relative; z-index: 1; }
+
+/* Progressive blur, not a pane of frosted glass. Three passes, each masked to
+   stop lower than the one before, so the blur is deep behind the mark and has
+   already let go by the time the bar ends — and the veil runs past the bar's
+   own edge, so nothing terminates on a line. The tint rides on top of the
+   three, otherwise each layer would blur the wash laid down by the last. */
+.bar-veil {
+  position: absolute; left: 0; right: 0; top: 0;
+  height: calc(100% + 42px);
+  z-index: 0; pointer-events: none;
+  opacity: 0; transition: opacity 0.5s var(--ease-soft);
+}
+.bar.solid .bar-veil { opacity: 1; }
+.bv { position: absolute; inset: 0; }
+.bv1 {
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 20%, transparent 50%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 20%, transparent 50%);
+}
+.bv2 {
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 42%, transparent 70%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 42%, transparent 70%);
+}
+.bv3 {
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 62%, transparent 90%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 62%, transparent 90%);
+}
+/* the filters only exist while the bar is lit, so there is nothing to pay for
+   at the top of the page — and the opacity ramp hides them switching on */
+.bar.solid .bv1 { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.bar.solid .bv2 { backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); }
+.bar.solid .bv3 { backdrop-filter: blur(2.5px); -webkit-backdrop-filter: blur(2.5px); }
+/* On the wall's own tone rather than a lighter one. The top of the page is
+   what Safari's strip has to match, and it cannot match two colours: the
+   veil used to wash the top in #f0f0ee while the strip was painted #dededc,
+   which is the seam. Everything at that edge is now the one colour. */
+.bv-tint {
+  background: linear-gradient(
+    180deg,
+    rgba(222, 222, 220, 0.94) 0%,
+    rgba(222, 222, 220, 0.84) 32%,
+    rgba(222, 222, 220, 0.52) 58%,
+    rgba(222, 222, 220, 0.18) 80%,
+    rgba(222, 222, 220, 0) 100%
+  );
+}
+
+.bar-mark { display: grid; justify-items: center; gap: 5px; justify-self: center; }
+.bar-mark .ink { width: clamp(68px, 9svh, 78px); }
+.bar-mark .ink img { width: 100%; }
+.bar-mark .sub {
+  font-size: 7.6px; letter-spacing: 0.4em; text-indent: 0.4em;
+  color: var(--ink-46); white-space: nowrap;
+}
+.icon-btn {
+  width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%;
+  color: var(--ink-72);
+  transition: transform 0.35s var(--ease), opacity 0.4s var(--ease), background 0.3s;
+}
+.icon-btn:active { transform: scale(0.9); }
+.icon-btn.gone { opacity: 0; pointer-events: none; transform: translateX(-6px); }
+.bar-back { justify-self: start; }
+.bar-more { justify-self: end; }
+.dots { display: flex; gap: 4px; }
+.dots i { width: 3.4px; height: 3.4px; border-radius: 50%; background: currentColor; transition: transform 0.45s var(--ease); }
+.icon-btn.open .dots i:first-child { transform: translateX(3px); }
+.icon-btn.open .dots i:last-child { transform: translateX(-3px); }
+
+/* ═══════════════════════  the "more" sheet  ═══════════════════ */
+/* `visibility`, not `opacity` alone. Safari 26 samples the styles of fixed
+   layers near an edge even when they are invisible, and the card below sits
+   at the bottom of the screen painted in #f8f8f7 — a near-white it was
+   handing the toolbar while nobody could see it. Hidden means hidden. */
+/* NO COLOUR ON ANY OF THESE UNTIL THEY ARE ACTUALLY ON.
+   `visibility: hidden` stops them being drawn, but Safari still READS them
+   when it is deciding what colour the page is at an edge — and all three of
+   them are dark and lie across an edge. That is how taking `theme-color` away
+   turned both strips BLACK: the browser went looking for the page's colour
+   and found a curtain nobody could see. The filter goes with the colour: a
+   backdrop-filter on a hidden full-screen layer is a compositing pass for
+   nothing. */
+.sheet::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit; background: var(--paper-top);
+}
+
+.sheet-veil {
+  position: fixed; inset: 0; z-index: 94;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.45s var(--ease-soft), visibility 0s linear 0.45s;
+}
+.sheet-veil.on {
+  background: rgba(22, 21, 15, 0.26);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+}
+.sheet-veil.on {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transition: opacity 0.45s var(--ease-soft), visibility 0s;
+}
+.sheet {
+  position: fixed; z-index: 95; left: 50%; bottom: calc(var(--safe-b) + 16px);
+  width: min(420px, calc(100vw - 32px));
+  transform: translate(-50%, 24px);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  /* NO background-color on the fixed element itself — it goes on the child
+     below. Safari reads a fixed element near an edge to colour its own strip,
+     and this one sits at the bottom of the screen carrying #f8f8f7 even while
+     it is hidden: that is a strip a shade lighter than the page, under every
+     screen, all the time. The panel looks exactly the same either way. */
+  border: 1px solid var(--hair); border-radius: calc(var(--r-card) + 4px);
+  box-shadow: 0 30px 60px -28px rgba(22, 21, 15, 0.5);
+  padding: var(--sp-1);
+  transition: opacity 0.45s var(--ease), transform 0.55s var(--ease),
+    visibility 0s linear 0.55s;
+}
+.sheet.on {
+  opacity: 1; visibility: visible; transform: translate(-50%, 0); pointer-events: auto;
+  transition: opacity 0.45s var(--ease), transform 0.55s var(--ease), visibility 0s;
+}
+.sheet a, .sheet button {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
+  width: 100%; padding: 14px var(--sp-3); border-radius: var(--r-inner);
+  /* set as the main site sets a line and its reading: the name in the face's
+     own size, what it is in the small one, muted */
+  font-size: var(--s1); letter-spacing: -0.01em;
+  transition: background 0.3s;
+}
+.sheet .val { color: var(--muted); font-size: var(--s0); letter-spacing: 0; }
+/* hover belongs to a mouse: a phone applies it on tap and leaves it there */
+@media (hover: hover) and (pointer: fine) {
+  .icon-btn:hover { background: rgba(22, 21, 15, 0.05); }
+  .sheet a:hover, .sheet button:hover { background: rgba(22, 21, 15, 0.045); }
+}
+
+/* ════════════════════  page frame and transition  ═══════════════ */
+/* The page fills whatever is visible RIGHT NOW, which on iOS is not a constant.
+   `svh` is the viewport with Safari's bars showing and `lvh` the one without;
+   sized to `svh`, the page stopped about a hundred pixels short the moment the
+   bars retracted and a band of bare canvas opened under it. `dvh` is the one
+   that tracks. It reflows as the bars move, and that is affordable here for a
+   specific reason: the only thing in this column that can change size is the
+   block at the foot of it, so the headline and the actions do not shift.
+   Everything the layout has to FIT into is still measured in `svh` — the small
+   viewport — so nothing can overflow when the bars come back. */
+.page {
+  position: relative; z-index: 1;
+  /* The box covers the largest the screen can ever be, so content is drawn
+     under Safari's bars instead of stopping at them — which is the whole
+     difference between this and a page that shows two strips of flat colour.
+     `dvh` fitted the visible area and therefore still ended at the bar.
+     What has to stay reachable is laid out inside the small viewport by the
+     padding below; only the picture at the foot is allowed into the rest. */
+  min-height: 100svh;
+  min-height: 100lvh;
+  padding-bottom: var(--chrome-b);
+  padding-top: var(--bar);
+  display: flex; flex-direction: column;
+}
+.wrap { width: 100%; max-width: 620px; margin: 0 auto; padding: 0 var(--gutter); }
+/* A screen with nothing below it should not hug the header. `.page` is a flex
+   column, so auto margins sit the block optically in whatever height is left
+   under the bar rather than leaving it top-heavy with a void beneath. */
+.page > .wrap.fill { margin-block: auto; }
+/* The type never gives ground: whatever has to yield on a short screen is the
+   picture below it, never a line of the headline being squeezed. */
+.page > .wrap { flex: 0 0 auto; }
+
+/* The hero is a plain block. A perspective room was drawn behind this type in
+   WebGL and it is gone, and three.js with it. `.hero-content` stays: the
+   headline is sized in `cqw` against it, so it is a container, not leftover
+   scaffolding. */
+.hero { position: relative; isolation: isolate; }
+.hero-content { position: relative; z-index: 2; container-type: inline-size; }
+
+/* ════════════════  between screens  ════════════════
+   The main site's own transition. A feathered diagonal wipe where the surface
+   never moves — only its mask travels — with the mark held in the dark while
+   the route changes underneath. */
+/* Absolute, against the document — never fixed. iOS keeps a fixed layer inside
+   the SMALL viewport, so this washed the screen down to Safari's bottom bar and
+   stopped: a strip of the page stayed lit under it for as long as the curtain
+   was closed, and went away with it. That is the band that only ever showed up
+   between screens. Same geometry as the wall behind it, for the same reason. */
+.veil {
+  position: absolute; left: 0; right: 0; z-index: 200;
+  top: -10vh; height: calc(100% + 10vh);
+  overflow: hidden; pointer-events: none; visibility: hidden;
+}
+.veil-wash {
+  position: absolute; inset: 0;
+  -webkit-mask-image: linear-gradient(165deg, #000 40%, rgb(0 0 0 / 94%) 46%, rgb(0 0 0 / 50%) 55%, rgb(0 0 0 / 10%) 65%, transparent 72%);
+  mask-image: linear-gradient(165deg, #000 40%, rgb(0 0 0 / 94%) 46%, rgb(0 0 0 / 50%) 55%, rgb(0 0 0 / 10%) 65%, transparent 72%);
+  -webkit-mask-size: 100% 400%; mask-size: 100% 400%;
+  -webkit-mask-position: 0 100%; mask-position: 0 100%;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+/* the accent rides the leading edge of the paper, the same way it arrives in
+   everything else here: burgundy on the way in, gone by the time it settles */
+.veil-edge {
+  position: absolute; inset: 0;
+  -webkit-mask-image: linear-gradient(165deg, transparent 34%, rgb(0 0 0 / 58%) 45%, rgb(0 0 0 / 20%) 56%, transparent 66%);
+  mask-image: linear-gradient(165deg, transparent 34%, rgb(0 0 0 / 58%) 45%, rgb(0 0 0 / 20%) 56%, transparent 66%);
+  -webkit-mask-size: 100% 400%; mask-size: 100% 400%;
+  -webkit-mask-position: 0 100%; mask-position: 0 100%;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+.veil-mark {
+  /* FIXED, while the curtain around it stays absolute. The curtain has to be
+     absolute — a fixed one stops at Safari's bars and leaves a lit strip of
+     page under it — but that ties it to the DOCUMENT, and an office screen
+     parks itself a hundred and forty pixels down the moment it mounts. The
+     wash does not care: it covers the document either way. The mark did: it
+     sat at the middle of the document and jumped up the screen by exactly
+     that parking, in full view, every time anyone opened an office.
+     Fixed is safe for this one: it is in the middle of the screen, not at an
+     edge, and it carries no background-colour — so it is nothing the browser
+     would read to tint a strip with. */
+  position: fixed; top: 50%; left: 50%;
+  width: clamp(140px, 40vw, 260px); height: auto;
+  opacity: 0; transform: translate(-50%, -50%);
+}
+.veil.cover, .veil.reveal { visibility: visible; }
+/* ── THE CURTAIN IS PAPER, NOT INK ───────────────────────────────────────
+   It used to be #161616. Against a screen whose top and bottom strips the
+   browser paints for itself — in the paper tone, because that is what it
+   samples — a black curtain framed itself in two grey bands every time
+   anyone moved between screens.
+   So it is the paper's own greys now, and the ENDS of the gradient are
+   exactly `--paper`: the strips have nothing to be different from. The
+   middle is deeper, which is what keeps it a curtain rather than a flash,
+   and the mark stands in ink on it rather than knocked out in white. */
+.veil.cover .veil-edge, .veil.reveal .veil-edge { background: rgba(var(--burgundy-rgb), 0.17); }
+.veil.cover .veil-wash, .veil.reveal .veil-wash {
+  background: linear-gradient(
+    180deg,
+    var(--paper) 0%,
+    #d4d4d2 16%,
+    #c7c7c5 50%,
+    #d4d4d2 84%,
+    var(--paper) 100%
+  );
+}
+.veil.cover .veil-wash { animation: veilIn 780ms cubic-bezier(0.32, 0, 0.2, 1) both; }
+.veil.cover .veil-edge { animation: veilIn 780ms cubic-bezier(0.32, 0, 0.2, 1) both; }
+/* 300ms rather than 200: on the ink curtain the mark read as something
+   emerging out of the dark, so arriving early was the point. On paper it has
+   to wait until the sheet is actually across, or it stands over the screen it
+   is supposed to be covering. */
+.veil.cover .veil-mark { animation: markIn 360ms ease 300ms both; }
+.veil.reveal .veil-wash { animation: veilOut 900ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+.veil.reveal .veil-edge { animation: veilOut 900ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+.veil.reveal .veil-mark { animation: markOut 420ms ease both; }
+/* and while it is across the screen the strips belong to the curtain, not to
+   whatever screen is underneath it — an office sky tinting the top of a paper
+   curtain is the same mismatch the other way round */
+html.leaving .chrome-tint { background: var(--paper); }
+@keyframes veilIn {
+  from { mask-position: 0 100%; -webkit-mask-position: 0 100%; opacity: 0; }
+  20%  { opacity: 1; }
+  to   { mask-position: 0 0; -webkit-mask-position: 0 0; opacity: 1; }
+}
+@keyframes veilOut {
+  from { mask-position: 0 0; -webkit-mask-position: 0 0; opacity: 1; }
+  70%  { opacity: 1; }
+  to   { mask-position: 0 100%; -webkit-mask-position: 0 100%; opacity: 0; }
+}
+@keyframes markIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes markOut { from { opacity: 1; filter: blur(0); } to { opacity: 0; filter: blur(7px); } }
+
+/* ─────────────────────────  reveals  ─────────────────────────
+   The main site's own, in both of its parts. The shape: twenty pixels up and
+   seven pixels of blur clearing, on its one curve. The colour: everything
+   arrives in the studio's burgundy and settles into ink behind the wave —
+   over there it is driven by scroll, here by the entrance, but it is the same
+   `color-mix` walking the same two colours. The colour runs longer than the
+   shape on purpose, so the accent trails the movement instead of tracking it. */
+.rise {
+  opacity: 0; transform: translate3d(0, 20px, 0); filter: blur(7px);
+  --burn: 0;
+  color: color-mix(in oklab, var(--settle, var(--ink)) calc(var(--burn) * 100%), var(--burgundy));
+}
+.rise.in {
+  animation: rise 1s var(--ease) both, burn 2.4s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 70ms + var(--lead, 0ms));
+}
+@keyframes rise { to { opacity: 1; transform: none; filter: blur(0); } }
+/* The accent holds before it lets go. A straight ramp spends most of its
+   length within a few per cent of ink, so the burgundy was technically there
+   and practically invisible; the shoulder is what makes it a colour the eye
+   catches rather than a tint it infers. */
+@keyframes burn {
+  0%   { --burn: 0; }
+  32%  { --burn: 0.04; }
+  100% { --burn: 1; }
+}
+
+/* ── the arrival is not allowed to be the only thing holding the result ───
+   iOS Safari sometimes keeps the blurred raster of a filter animation after
+   the animation itself has finished. The computed style is correct and the
+   pixels are stale, which shows up as two or three letters left soft in a
+   line that has otherwise arrived — intermittently, and more often on a
+   screen already carrying the shader and the header's blur passes.
+
+   So the end state is written a second time, as a plain rule, once the
+   sequence is genuinely over (`Reveal` asks the animations themselves when
+   that is). `filter: none`, not `blur(0)`: dropping the filter drops the
+   layer it created, and that is what forces the fresh raster. When the
+   animation has behaved, this changes nothing — it lands on the same values.
+
+   `!important` is doing real work here: an animation's filled end state
+   outranks an ordinary declaration, so nothing less can replace it. The
+   animations are left running, only their result overridden. */
+.rise.settled {
+  opacity: 1 !important; transform: none !important; filter: none !important;
+  --burn: 1;
+}
+.rise.settled .wd {
+  opacity: 1 !important; transform: none !important; filter: none !important;
+  clip-path: none !important; text-shadow: none !important;
+  --burn: 1;
+}
+/* ═══════════════════════  the main site's type  ═══════════════════════
+   Everything on a screen is set the way nobeldesignstudio.com sets it: the
+   studio's one face in its one weight, the large lines tracked in tight and
+   the small ones left alone; hairlines between things rather than boxes round
+   them; and not one pictogram — only the main site's own hairline arrows.
+   The sizes are its sizes, brought onto the scale above. */
+
+/* A screen's own name. The main site sets a page title at 17vw on a phone,
+   which is --s6 to within a few pixels; the vw term is kept because the
+   longest one, "Positions", needs it on a 320px phone, and the svh term is
+   what keeps an SE to one screen. */
+.title-xl {
+  margin: 0;
+  font-size: min(17vw, 10vh, var(--s6));
+  font-size: min(17vw, 10svh, var(--s6));
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 0.84;
+}
+.title-xl > span { display: block; }
+
+/* the caption under a screen's name — the same caption the first screen has */
+.lede {
+  margin: var(--s1) 0 0;
+  max-width: 40ch;
+  font-size: var(--s0);
+  line-height: 1.52;
+  letter-spacing: 0.008em;
+  text-wrap: pretty;
+  --settle: var(--ink-72);
+}
+
+/* What a list is, and how many: the section line, in the scale's one size of
+   tracked caps, one step below the captions. */
+.kicker {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: var(--s4) 0 var(--s0);
+  font-size: var(--s-1);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  --settle: var(--ink-72);
+}
+
+/* ═══════════════════  the first screen's own phrase  ═══════════════════
+   The one thing on the site that is not the main site's type: the phrase the
+   first screen is built around, set exactly as the exhibition page set it —
+   Blushing Rose, in capitals, every word opening from its own centre and
+   arriving through the burgundy. Everything under it is the main site's. */
+.display {
+  font-family: var(--font-display), "Iowan Old Style", Baskerville, serif;
+  font-weight: 400;
+  /* Sized against the column, not the viewport: vw counts the scrollbar the
+     column does not have, and on the desktop widths where one appears that
+     was enough to wrap FROM VISION onto two lines. WORLDWIDE. is the widest
+     line at 7.05em, so the column divided by 7.05 is the largest size that
+     always holds three lines. */
+  font-size: min(14.6vw, 7.8vh, 70px);
+  font-size: min(15.6cqw, 7.8svh, 70px);
+  line-height: 1.02;
+  letter-spacing: -0.004em;
+  margin: 0;
+}
+.display .ln { display: block; }
+/* Each word opens from its own centre and grows out of the middle of its
+   line — `--o` puts the transform origin on the side facing the centre, so
+   the words resolve outward from the middle of the screen instead of
+   sliding in from an edge. The clip carries a little slack top and
+   bottom so no ascender or descender is ever shaved. */
+.display .wd {
+  display: inline-block;
+  clip-path: inset(-0.16em 50% -0.16em 50%);
+  transform: scale(0.94);
+  transform-origin: var(--o, 50%) 62%;
+  opacity: 0;
+  filter: blur(5px);
+}
+/* the words carry the headline's entrance; the block must not fade as well,
+   or five separate reveals happen behind one block-wide dissolve */
+.display.rise, .display.rise.in { opacity: 1; transform: none; filter: none; animation: none; }
+.display .wd {
+  --burn: 0;
+  color: color-mix(in oklab, var(--ink) calc(var(--burn) * 100%), var(--burgundy));
+}
+.in .display .wd, .display.in .wd {
+  animation: wordIn 0.58s var(--ease-word) both, burn 2s var(--ease) both;
+  animation-delay: calc(var(--w, 0) * 100ms + 140ms);
+}
+/* Each word carries a bloom of the accent out of the blur with it. The halo
+   is the same burgundy the letterform itself is arriving in, so what reads is
+   one colour resolving rather than a glow laid over a word. */
+@keyframes wordIn {
+  from {
+    clip-path: inset(-0.16em 50% -0.16em 50%); transform: scale(0.94);
+    opacity: 0; filter: blur(5px);
+    text-shadow: 0 0 26px rgba(var(--burgundy-rgb), 0.55);
+  }
+  55%  { opacity: 1; }
+  to   {
+    clip-path: inset(-0.16em 0 -0.16em 0); transform: scale(1);
+    opacity: 1; filter: blur(0);
+    text-shadow: 0 0 0 rgba(var(--burgundy-rgb), 0);
+  }
+}
+
+/* the caption under it, as it was there: centred, a narrow measure, open
+   leading and a hair of tracking */
+.hero-lede {
+  margin: 0;
+  font-size: clamp(12.1px, 3.3vw, 14.4px);
+  line-height: 1.52;
+  letter-spacing: 0.008em;
+  --settle: var(--ink-72);
+  color: color-mix(in oklab, var(--ink-72) calc(var(--burn) * 100%), var(--burgundy));
+  text-wrap: pretty;
+}
+.centre { text-align: center; }
+.centre .hero-lede { margin-inline: auto; max-width: 40ch; }
+
+/* ── the first screen, top to bottom ──
+   The phrase and its caption stand where they stood on the exhibition page,
+   under the bar. The six lines stand on the foot of the screen, a step of
+   air above it, and share whatever height is left between the two: each
+   gets a sixth of it, between the least a line can be read in and the most
+   it can be given before it stops reading as a list. Anything over that is
+   the gap above the list — so a tall phone gets a calmer screen, not taller
+   buttons, and an SE gets one screen. */
+.home > .wrap {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  /* a caption's step under the last line on an SE, two steps on a tall phone */
+  padding-bottom: clamp(var(--s0), 2.8svh, var(--s2));
+}
+.home-links {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 0;
+  /* the least the list stands off the caption; a taller screen adds to it */
+  margin-top: var(--s1);
+}
+
+/* ═══════════════════════  an office  ═══════════════════════ */
+.clock { font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+.sep { animation: blink 2s steps(1) infinite; }
+@keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0.25; } }
+
+/* ── the city ──
+   Full bleed across the top of an office screen, gone by the time the type
+   starts. Painted fade rather than a mask — a mask over a playing video is
+   recomposited every frame and shivers. It ends on the lit centre of the paper
+   scene, not on the paper's base tone, because that is the colour actually on
+   screen at the height where the film stops.                               */
+.film {
+  position: absolute; left: 50%; transform: translateX(-50%); top: 0;
+  width: 100vw; height: var(--film-h);
+  z-index: 0; pointer-events: none; overflow: hidden;
+}
+.film video, .film-still {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% var(--film-y, 50%);
+}
+/* the still holds the frame until the video is decoding, then steps aside */
+.film-still { transition: opacity 0.8s var(--ease-soft); }
+.film.playing .film-still { opacity: 0; }
+.film-veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    180deg,
+    /* THE CITY GOES ALL THE WAY UP.
+       Nothing of ours stands in the safe area — the header's own padding
+       begins below it, which is what `--safe-t` is for — so the film keeps
+       that strip and the wash barely touches it. A touch rather than nothing
+       at all: if the browser ever does lay a flat tone over that strip, a
+       city at 88% meets it more softly than a city at full strength, and 12%
+       of paper over a sky is not a band anyone can point at.
+       The stops are anchored in pixels off the inset, because the inset is a
+       length and the film's height is not. */
+    rgba(247, 247, 246, 0.12) 0,
+    rgba(247, 247, 246, 0.18) var(--safe-t),
+    /* the mark stands here in dark ink, and a skyline can reach this high */
+    rgba(247, 247, 246, 0.44) calc(var(--safe-t) + 26px),
+    rgba(247, 247, 246, 0.3) calc(var(--safe-t) + 78px),
+    rgba(247, 247, 246, 0.1) 38%,
+    rgba(247, 247, 246, 0.42) 62%,
+    rgba(247, 247, 246, 0.82) 80%,
+    rgba(247, 247, 246, 0.97) 92%,
+    /* solid before the edge, not at it: ending the ramp exactly on 100% left
+       the last row of the film showing through as a hairline across the page */
+    #f7f7f6 97%,
+    #f7f7f6 100%
+  );
+}
+/* The screen it stands on. The band below the film starts on exactly the tone
+   the veil ends on, so the joint has no edge at all, and only then dissolves
+   into the paper — over a couple of hundred pixels, where no video is involved
+   and a painted fade to transparent cannot betray itself. */
+/* The film takes about half the screen, so the screen under it runs tighter
+   than the others — its own zone gap rather than the site-wide one. */
+/* The film takes its share of the screen — but never more than the screen has
+   left after the name, the clock and four actions, which is about 400px. On a
+   tall phone the first term wins and nothing has changed; on an SE in Safari,
+   with 579px to work with, the second one does and the film gives way instead
+   of the page scrolling. A plain clamp cannot do this: it is a straight line,
+   and what is needed is generous at one end and tight at the other. */
+.has-film {
+  position: relative;
+  --film-h: clamp(170px, min(46svh, 100svh - 430px), 470px);
+  --zone: clamp(15px, 3.4svh, 38px);
+}
+.has-film::before {
+  content: ""; position: absolute; left: 50%; transform: translateX(-50%);
+  /* a pixel of overlap: butting this exactly against the foot of the film let
+     the paper show through the joint as a hairline on fractional pixel ratios */
+  top: calc(var(--film-h) - 1px); width: 100vw; height: 24svh;
+  /* above the film, not under it: a pseudo-element of the parent paints below
+     its children, so an overlap drawn at z-index 0 goes behind the very edge
+     it is there to cover. The type sits higher still and is unaffected. */
+  z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, #f7f7f6 0%, rgba(247, 247, 246, 0.55) 46%, rgba(247, 247, 246, 0) 100%);
+}
+/* the film is not pushed down with the rest — it is absolute against the
+   page's own top edge, which padding does not move — so the type has to give
+   the compensation back, or it would sit `--chrome-b` lower under a film that
+   had not moved at all */
+.has-film .wrap {
+  position: relative; z-index: 1;
+  padding-top: calc(var(--film-h) - var(--bar) + var(--sp-1));
+}
+/* On a screen with a film the type is placed by the film above it, not by the
+   middle of the page — so when Safari's bars retract and the page grows, the
+   slack belongs at the bottom. Centred, the name and the actions would drift
+   down half the height of the bar every time it hid. */
+.has-film > .wrap.fill { margin-block: 0 auto; }
+.film { opacity: 0; animation: filmIn 1.4s var(--ease) both; }
+@keyframes filmIn { to { opacity: 1; } }
+/* the office screen keeps more back on a wide screen: the column is wider, so
+   the same lines cost more height than they do on a phone */
+@media (min-width: 700px) {
+  .has-film { --film-h: clamp(170px, min(42svh, 100svh - 452px), 470px); }
+}
+
+/* ── the office itself, on the scale ── */
+/* the office's name, four steps up — and no wider than the line has room
+   for, so "Dubai Office, UAE" stays one line on a 375px phone */
+.office-name {
+  margin: 0;
+  font-size: min(var(--s4), 10vw);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  text-wrap: balance;
+}
+.office-time {
+  margin: var(--s0) 0 0;
+  color: var(--muted);
+  font-size: var(--s0);
+  font-variant-numeric: tabular-nums;
+  --settle: var(--muted);
+}
+.office-foot {
+  display: grid;
+  justify-items: center;
+  margin: var(--s3) 0 0;
+  padding-bottom: calc(var(--safe-b) + var(--s2));
+  color: var(--muted);
+  font-size: var(--s0);
+  line-height: 1.52;
+  text-align: center;
+  --settle: var(--muted);
+}
+
+/* ── careers ─────────────────────────────────────────────────────────── */
+.careers-head { position: relative; }
+/* On a phone "Positions" takes the whole measure, so the year stands at the
+   end of the first line instead, on its baseline — the main site's own
+   arithmetic: 0.749 of the title's size under its top at this line height,
+   0.829em of its own at 1. */
+.year {
+  position: absolute;
+  top: calc(min(17vw, 10svh, var(--s6)) * 0.749 - 0.829em);
+  right: 0;
+  font-size: var(--s0);
+  line-height: 1;
+}
+/* The positions run the width of the screen, as they do on the main site:
+   the rule under each is the room's edge, so it goes edge to edge and the
+   type keeps the gutter inside. */
+.positions { display: flex; flex-direction: column; }
+.careers-mail {
+  margin: var(--s4) 0 calc(var(--safe-b) + var(--s4));
+  color: var(--muted);
+  font-size: var(--s0);
+  --settle: var(--muted);
+}
+.careers-mail a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+/* On a phone the main site's vacancy line keeps its type 1.25rem in; here it
+   keeps it on the page's own gutter, so the title above and every position
+   under it start on one edge. */
+@media (max-width: 700px) {
+  .careers .positions > article { --gutter: clamp(22px, 6vw, 56px); }
+}
+/* Wide enough for the main site's own five columns, the screen gives them the
+   room they are drawn for, and the title stands on their gutter. */
+@media (min-width: 701px) {
+  .careers .wrap { max-width: none; padding-inline: 6.25vw; }
+}
+.toast {
+  position: fixed; left: 50%; bottom: calc(var(--safe-b) + 26px); z-index: 160;
+  transform: translate(-50%, 16px); opacity: 0; visibility: hidden; pointer-events: none;
+  padding: var(--sp-2) 22px; border-radius: var(--r-chip);
+  color: var(--cream);
+  /* the main site's one size of caps on a control */
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease),
+    visibility 0s linear 0.35s;
+}
+.toast::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit; background: transparent;
+}
+.toast.show::before { background: var(--ink); }
+.toast.show {
+  opacity: 1; visibility: visible; transform: translate(-50%, 0);
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease), visibility 0s;
+}
+
+/* ── a phone on its side ──────────────────────────────────────────────────
+   393px of height for a composition drawn for 800, and the floors in the
+   clamps are what is left to give (the links fold into two columns of their
+   own, in LinkRow.module.css). This is NOT the cliff the old
+   `max-height: 760px` rule was: no phone is this short in portrait, so
+   nothing can land on the wrong side of it by accident — it is a different
+   form factor, not a different size of the same one. The bar is measured, so
+   trimming the mark reaches `--bar` on its own. */
+@media (max-height: 460px) {
+  .bar-mark .ink { width: 58px; }
+  .bar-mark .sub { font-size: 7px; letter-spacing: 0.34em; }
+  .hero-lede { font-size: 11.6px; line-height: 1.42; }
+  .has-film { --film-h: clamp(110px, 34svh, 180px); }
+  .lede { font-size: 12px; line-height: 1.4; }
+  .wrap { max-width: 760px; }
+}
+
+/* There is no short-screen breakpoint any more, and that is the point.
+   Every value above is already a share of `svh`, so an SE and a Pro Max get
+   the same composition at two sizes rather than two compositions either side
+   of a cliff — and no device can land on the wrong side of it because its
+   browser measures the viewport differently from the next one's. */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .rise, .display .wd { opacity: 1; transform: none; filter: none; clip-path: none; --burn: 1; }
+  .display .wd { text-shadow: none; }
+  .film { opacity: 1; animation: none; }
+  .film-still { opacity: 1; }
+  /* the curtain still covers — it just arrives whole instead of sweeping */
+  .veil-wash, .veil-edge { -webkit-mask-image: none; mask-image: none; }
+  .veil-edge { opacity: 0; }
+}
