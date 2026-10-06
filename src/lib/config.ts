@@ -1,3 +1,5 @@
+import { asset } from "./base";
+
 /**
  * The single place links, films and positions live. Nothing below duplicates
  * them.
@@ -12,7 +14,7 @@ export const SITE = {
   motto: ["Spaces for a more", "meaningful life."] as const,
 
   /** the company presentation, served from `public/` and opened in a tab */
-  overview: "/assets/NOBEL-Company-Overview.pdf",
+  overview: asset("/assets/NOBEL-Company-Overview.pdf"),
   /* the new main site — the flagship */
   main: "https://nobeldesignstudio.com",
   instagram: "https://www.instagram.com/nobel.la/",
@@ -50,7 +52,7 @@ export const OFFICES: Office[] = [
     city: "Los Angeles",
     country: "United States",
     tz: "America/Los_Angeles",
-    thumb: "/assets/thumb-la.webp",
+    thumb: asset("/assets/thumb-la.webp"),
     tint: "#afcce2",
     phone: "+18186203412",
     whatsapp: "+18186203412",
@@ -62,7 +64,7 @@ export const OFFICES: Office[] = [
     city: "Dubai",
     country: "United Arab Emirates",
     tz: "Asia/Dubai",
-    thumb: "/assets/thumb-dubai.webp",
+    thumb: asset("/assets/thumb-dubai.webp"),
     tint: "#cdd9db",
     phone: "", // TODO: Dubai number
     whatsapp: "", // TODO: Dubai WhatsApp
@@ -74,7 +76,7 @@ export const OFFICES: Office[] = [
     city: "Europe",
     country: "Central European Time",
     tz: "Europe/Rome",
-    thumb: "/assets/thumb-europe.webp",
+    thumb: asset("/assets/thumb-europe.webp"),
     tint: "#c9d4db",
     phone: "+393318044921",
     whatsapp: "", // TODO: is this number on WhatsApp?
@@ -96,9 +98,9 @@ export type Film = {
 };
 
 export const FILMS: Film[] = [
-  { id: "ir_L4Bc_TsY", name: "St. Ives", meta: "Hollywood Hills · Home tour", thumb: "/assets/yt/st-ives.webp" },
-  { id: "hjPmOuM_c_c", name: "Hidden Hills", meta: "Barn house · Home tour", thumb: "/assets/yt/hidden-hills.webp" },
-  { id: "JEFJtnfKuIE", name: "Hidden Hills", meta: "Max Nobel · Interview", thumb: "/assets/yt/max-nobel.webp" },
+  { id: "ir_L4Bc_TsY", name: "St. Ives", meta: "Hollywood Hills · Home tour", thumb: asset("/assets/yt/st-ives.webp") },
+  { id: "hjPmOuM_c_c", name: "Hidden Hills", meta: "Barn house · Home tour", thumb: asset("/assets/yt/hidden-hills.webp") },
+  { id: "JEFJtnfKuIE", name: "Hidden Hills", meta: "Max Nobel · Interview", thumb: asset("/assets/yt/max-nobel.webp") },
 ];
 
 export const filmHref = (id: string) => `https://youtu.be/${id}`;
@@ -126,7 +128,12 @@ export type Vacancy = {
   location: string;
   type: string;
   details: string;
+  /** terms the line itself does not carry — the contract, the start */
+  facts?: readonly { label: string; value: string }[];
   requirements: readonly string[];
+  niceToHave?: readonly string[];
+  /** what the work is, line by line */
+  duties?: readonly string[];
   offers: readonly Offer[];
   /** the position's own Tally form — its share link */
   form: string;
@@ -176,21 +183,51 @@ export const POSITIONS: readonly Vacancy[] = [
     form: "https://tally.so/r/LZeOYJ", // Tally — "Join NOBÉL as an FF&E / Procurement Manager"
   },
   {
-    slug: "client-relations",
-    title: "Client Relations & Development Manager",
-    mode: "Office / Hybrid",
-    location: "Dubai",
+    /* The studio's own copy for this role (NOBEL_Careers_Page_Final_Copy.pdf),
+       word for word, all of it but the subtitle. */
+    slug: "sales",
+    title: "Sales & Client Relations Manager",
+    mode: "On-site / Hybrid",
+    location: "Dubai, UAE",
     type: "Full-time",
-    details: "Build thoughtful relationships with clients and partners who share our standards.",
-    requirements: [
-      "2+ years of sales experience",
-      "Self-driven & results-oriented",
-      "Strong communication & negotiation skills",
-      "Experience with international clients",
-      "Fluent English",
-      "Arabic-speaking candidates are preferred",
+    details:
+      "Build relationships with premium clients and partners in the UAE and guide suitable clients from first " +
+      "enquiry to a clear outcome. The role combines client development, sales, relationship building and " +
+      "disciplined pipeline management.",
+    facts: [
+      { label: "Employment", value: "Full-time, UAE employment contract" },
+      { label: "Start", value: "As soon as possible" },
     ],
-    offers: [offer.salary, offer.hybrid, offer.brand, offer.international, offer.growth],
+    requirements: [
+      "5+ years of sales experience in the premium UAE market with a long, high-value deal cycle, including recent experience in Dubai.",
+      "A genuine network in Dubai among developers, brokers, architects or private clients.",
+      "A verifiable track record: deals, values, cycle length and lead sources.",
+      "Experience negotiating with private residence owners and their representatives.",
+      "CRM discipline (HubSpot or similar) and pipeline management.",
+      "Fluent English and confident written communication.",
+      "Based in Dubai or able to relocate and start within the agreed notice period.",
+    ],
+    niceToHave: [
+      "Russian and/or Arabic",
+      "Experience with European or Italian manufacturers",
+      "Experience building or training a sales team",
+    ],
+    duties: [
+      "Respond to new enquiries the same day and qualify them: project, stage, scale, timing, budget, decision makers and readiness.",
+      "Run in-depth first meetings and agree the next step with the client.",
+      "Prepare, present and discuss proposals together with the design and technical teams, explaining scope, logic and cost.",
+      "Support the client after the proposal until a decision and record the result.",
+      "Build relationships with premium client sources in the UAE: developers, luxury brokers, architects, family offices and high-end furniture and lighting showrooms.",
+      "Keep the CRM accurate, analyse why deals move or stall, and report regularly on pipeline and conversion.",
+    ],
+    offers: [
+      { text: "Full-time UAE employment contract" },
+      { text: "UAE work visa sponsored by NOBÉL" },
+      { text: "Medical insurance" },
+      { text: "Annual leave under UAE labour law" },
+      { text: "Base salary depending on level and network" },
+      { text: "Growth path to Head of Sales as the department develops" },
+    ],
     form: "https://tally.so/r/BzrPxQ", // Tally — "Join our team as Sales Manager in Dubai"
   },
 ];

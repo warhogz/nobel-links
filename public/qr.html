@@ -365,8 +365,9 @@ $("#dl-qr").addEventListener("click", () => save($("#plain"), "NOBEL-links-qr.pn
   $("#" + id).addEventListener("change", render);
 });
 
-/* start from wherever this tool is served, minus the /qr.html */
-$("#url").value = location.href.replace(/qr\.html.*$/, "");
+/* start from wherever this tool is served, minus the /qr.html — and minus
+   the slash that leaves, since the site's addresses have none */
+$("#url").value = location.href.replace(/qr\.html.*$/, "").replace(/\/$/, "");
 render();
 </script>
 </body>

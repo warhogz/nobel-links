@@ -14,6 +14,7 @@ import {
 } from "react";
 
 import { onArrival } from "@/lib/arrival";
+import { toRoute } from "@/lib/base";
 import { createCircle, type Point } from "@/lib/circle";
 import { ArrowIcon, type ArrowDirection } from "./Icons";
 import { NobelNightWindow } from "./NightWindow";
@@ -171,7 +172,7 @@ export default function LinkRow({ href, action, label, index, meta, thumb, arrow
     }
     if (!href) return;
     if (internal) {
-      if (href === window.location.pathname) {
+      if (href === toRoute(window.location.pathname)) {
         settle(0);
         return;
       }

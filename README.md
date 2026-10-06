@@ -3,6 +3,13 @@
 Одна точка входа для всего, что студия даёт по ссылке или QR: презентация,
 сайт, Instagram, ролики, вакансии, WhatsApp.
 
+**Адрес: [nobeldesignstudio.com/hub](https://nobeldesignstudio.com/hub).** Это
+отдельный проект и отдельный деплой (`nobel-links.vercel.app`), который основной
+сайт показывает под своим доменом: в его `next.config.ts` правило `rewrites`
+отправляет `/hub` и всё под ним сюда. Здесь `basePath: "/hub"` — все страницы,
+скрипты и шрифты живут под `/hub`. Корень деплоя и старые адреса экранов
+(`/careers`, `/contact/la`…) перенаправляются на `/hub`.
+
 **Каркас** — страница для выставки: фон-шейдер, шапка, бумажный переход между
 экранами, «один экран без скролла», вся механика под Safari, экраны офисов
 с роликом города под статус-баром. Первый экран с текстом («FROM VISION TO
@@ -17,26 +24,32 @@ REALITY. WORLDWIDE.», Blushing Rose, слова раскрываются по �
 - **Next.js 15** (App Router) + **React 19** + **TypeScript**
 - **Tailwind 4** — токены в `src/app/globals.css`
 - **Lenis** — инерционный скролл
-- Статический экспорт: `npm run build` кладёт готовую папку `out/`, её отдаёт
-  любой хостинг. Node на сервере не нужен.
+- Хостинг — Vercel. Все страницы собираются статикой, но это обычная сборка
+  Next, не статический экспорт: перенаправлениям нужен сервер.
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
-npm run build      # -> out/
+npm run dev        # http://localhost:3000 → /hub
+npm run build && npm start
 ```
+
+Пути к файлам из `public/` (картинки, PDF, ролики) пишутся через `asset()` из
+`src/lib/base.ts` — Next сам добавляет `/hub` только к страницам и своим
+скриптам. Адреса страниц — без слэша на конце, как на основном сайте: если
+одна сторона слэш добавляет, а другая убирает, посетитель уходит в бесконечный
+круг перенаправлений.
 
 ## Экраны
 
 | Путь | Что там |
 |---|---|
-| `/` | Заголовок и шесть ссылок, в этом порядке: Company Overview, Our Website, Instagram, Projects on YouTube, Careers, Contact Us |
-| `/projects/` | Три ролика: превью, название проекта, переход на YouTube |
-| `/careers/` | Три вакансии, как на основном сайте: нажал на строку — раскрылась, внутри требования, что предлагаем и «Apply for this position» → Tally |
-| `/careers/#architect` | Ссылка сразу на открытую вакансию (`architect`, `finishing-manager`, `client-relations`) |
-| `/contact/` | «Contact us» и три офиса: город, название, местное время |
-| `/contact/la/` `/dubai/` `/europe/` | Ролик города сверху, WhatsApp, звонок, почта, «Save contact» (.vcf) |
-| `/qr.html` | Внутренний генератор заставки с QR (см. ниже) |
+| `/hub` | Заголовок и шесть ссылок, в этом порядке: Company Overview, Our Website, Instagram, Projects on YouTube, Careers, Contact Us |
+| `/hub/projects` | Три ролика: превью, название проекта, переход на YouTube |
+| `/hub/careers` | Три вакансии, как на основном сайте: нажал на строку — раскрылась, внутри требования, что предлагаем и «Apply for this position» → Tally |
+| `/hub/careers#architect` | Ссылка сразу на открытую вакансию (`architect`, `finishing-manager`, `sales`) |
+| `/hub/contact` | «Contact us» и три офиса: город, название, местное время |
+| `/hub/contact/la` `/dubai` `/europe` | Ролик города сверху, WhatsApp, звонок, почта, «Save contact» (.vcf) |
+| `/hub/qr.html` | Внутренний генератор заставки с QR (см. ниже) |
 
 Куда ведут ссылки главной:
 
@@ -74,7 +87,7 @@ npm run build      # -> out/
 |---|---|
 | Architect — ArchiCAD / Revit | Join NOBÉL as an Architect — `tally.so/r/VLKDDv` |
 | Interior Finishing Manager / Procurement | Join NOBÉL as an FF&E / Procurement Manager — `tally.so/r/LZeOYJ` |
-| Client Relations & Development Manager | Join our team as Sales Manager in Dubai — `tally.so/r/BzrPxQ` |
+| Sales & Client Relations Manager | Join our team as Sales Manager in Dubai — `tally.so/r/BzrPxQ` |
 
 Ссылка — та, что Tally даёт в Share → Copy link (`https://tally.so/r/…`).
 Пока у вакансии `form` пустой, её «Apply for this position» открывает письмо
@@ -155,8 +168,11 @@ Rose), `CityFilm.tsx`, `Clock.tsx`, ролики и фото городов, э�
 файлом с тем же именем.
 
 **Вакансии.** Массив `POSITIONS` в `config.ts` — три вакансии, у которых
-есть форма в Tally, тексты дословно из `systems/vacancies/model/positions.ts`
-основного сайта. `slug` — адрес для
+есть форма в Tally. Architect и Finishing Manager — дословно из
+`systems/vacancies/model/positions.ts` основного сайта; Sales & Client
+Relations Manager — дословно из `NOBEL_Careers_Page_Final_Copy.pdf`: условия
+(`facts`), требования, `niceToHave`, «What you'll do» (`duties`) и что
+предлагаем. У любой вакансии можно заполнить те же поля — блоки появятся сами. `slug` — адрес для
 ссылки на вакансию (`/careers/#slug`).
 
 **Ролики.** Массив `FILMS` в `config.ts`: `id` ролика, название проекта,
@@ -179,15 +195,14 @@ ffmpeg -i thumb.jpg -vf scale=640:360 -c:v libwebp -quality 80 public/assets/yt/
 
 ## Публикация
 
-Vercel: импортировать репозиторий, фреймворк Next.js, больше ничего не нужно.
-`og:image` (превью в мессенджерах) Vercel сам соберёт с адресом
-продакшн-деплоя; чтобы задать адрес явно — переменная `NEXT_PUBLIC_SITE_URL`.
-
-Любой другой хостинг: `npm run build` и отдать папку `out/`.
-`python scripts/serve.py` — отдать `out/` на телефон по локальной сети.
+Vercel, проект `nobel-links`: каждый пуш в `main` выкатывается сам. Проверить
+напрямую — `nobel-links.vercel.app/hub`; для людей — `nobeldesignstudio.com/hub`
+(через `rewrites` основного сайта). `og:image` указывает на
+`https://nobeldesignstudio.com/hub/assets/og.jpg`; другой адрес — переменная
+`NEXT_PUBLIC_SITE_URL`.
 
 ## QR-код на заставке
 
-`/qr.html` на опубликованном сайте — внутренняя страница, в меню её нет.
+`/hub/qr.html` на опубликованном сайте — внутренняя страница, в меню её нет.
 Адрес подставляется сам, выбираете размер экрана телефона и тему, скачиваете
 PNG. Код с максимальной коррекцией ошибок — читается под углом и с бликом.

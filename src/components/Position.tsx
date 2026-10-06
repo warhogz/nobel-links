@@ -20,8 +20,10 @@ import styles from "./Position.module.css";
  * it — from the keyboard, from a phone, or by opening another one — closes back
  * into its own toggle, once its details have gone up.
  *
- * The one difference from the main site: there, "Apply" carries the reader
- * down the page to the form. Here the form is Tally's, so it goes there.
+ * Two differences from the main site: there, "Apply" carries the reader down
+ * the page to the form, and here the form is Tally's, so it goes there. And a
+ * position may say more than the main site's do — its terms, what would be
+ * nice, what the work is — each set as one of the lists already there.
  */
 
 /* The stylesheet's timings for the circle closing, and for the details going
@@ -69,6 +71,19 @@ export default function Position({
   const lit = hovered || focused;
   const was = useRef({ lit: false, open: false });
   const apply = applyHref(vacancy);
+  const facts = vacancy.facts ?? [];
+  const nice = vacancy.niceToHave ?? [];
+  const duties = vacancy.duties ?? [];
+  /* a position that says more than the main site's do */
+  const rich = facts.length > 0 || nice.length > 0 || duties.length > 0;
+  /* where each list starts in the one sequence of beats */
+  const beat = {
+    facts: 0,
+    needs: facts.length,
+    nice: facts.length + vacancy.requirements.length,
+    duties: facts.length + vacancy.requirements.length + nice.length,
+    offers: facts.length + vacancy.requirements.length + nice.length + duties.length,
+  };
 
   useEffect(() => {
     const before = was.current;
@@ -154,12 +169,23 @@ export default function Position({
       </button>
       <div ref={drawerRef} className={styles.drawer} id={`position-details-${index}`} inert={!open}>
         <div className={styles.drawerInner}>
-          {/* Each line of the two lists comes in on its own beat, `--i`, the
-              rule over it drawn in from the left: the requirements first,
-              then what is offered. */}
-          <div className={styles.details}>
+          {/* Each line of the lists comes in on its own beat, `--i`, the rule
+              over it drawn in from the left — down the position in reading
+              order: the terms, who it is for, what would be nice, what the
+              work is, what is offered. */}
+          <div className={`${styles.details}${rich ? ` ${styles.rich}` : ""}`}>
             <div className={styles.lead}>
               <p className={styles.summary}>{vacancy.details}</p>
+              {facts.length ? (
+                <ul className={`${styles.offerList} ${styles.factList}`} aria-label="Terms">
+                  {facts.map((fact, line) => (
+                    <li key={fact.label} style={{ "--i": beat.facts + line } as CSSProperties}>
+                      <span className={styles.factLabel}>{fact.label}</span>
+                      <span>{fact.value}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
               <a
                 className={styles.apply}
                 href={apply}
@@ -173,18 +199,43 @@ export default function Position({
               <p className={styles.label} id={`position-needs-${index}`}>Who we&apos;re looking for</p>
               <ol className={styles.needList} aria-labelledby={`position-needs-${index}`}>
                 {vacancy.requirements.map((need, line) => (
-                  <li key={need} style={{ "--i": line } as CSSProperties}>
+                  <li key={need} style={{ "--i": beat.needs + line } as CSSProperties}>
                     <span className={styles.count} aria-hidden="true">{String(line + 1).padStart(2, "0")}</span>
                     <span>{need}</span>
                   </li>
                 ))}
               </ol>
             </div>
+            {nice.length ? (
+              <div className={styles.nice}>
+                <p className={styles.label} id={`position-nice-${index}`}>Nice to have</p>
+                <ul className={styles.offerList} aria-labelledby={`position-nice-${index}`}>
+                  {nice.map((item, line) => (
+                    <li key={item} style={{ "--i": beat.nice + line } as CSSProperties}>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {duties.length ? (
+              <div className={styles.duties}>
+                <p className={styles.label} id={`position-duties-${index}`}>What you&apos;ll do</p>
+                <ol className={styles.needList} aria-labelledby={`position-duties-${index}`}>
+                  {duties.map((duty, line) => (
+                    <li key={duty} style={{ "--i": beat.duties + line } as CSSProperties}>
+                      <span className={styles.count} aria-hidden="true">{String(line + 1).padStart(2, "0")}</span>
+                      <span>{duty}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ) : null}
             <div className={styles.offers}>
               <p className={styles.label} id={`position-offers-${index}`}>What we offer</p>
               <ul className={styles.offerList} aria-labelledby={`position-offers-${index}`}>
                 {vacancy.offers.map((offer, line) => (
-                  <li key={offer.text} style={{ "--i": vacancy.requirements.length + line } as CSSProperties}>
+                  <li key={offer.text} style={{ "--i": beat.offers + line } as CSSProperties}>
                     {offer.text}
                     {offer.note && <small>{offer.note}</small>}
                   </li>

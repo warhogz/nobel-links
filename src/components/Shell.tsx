@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { SITE, whatsappHref } from "@/lib/config";
+import { asset, toRoute } from "@/lib/base";
 import { Chevron } from "./Icons";
 import PaperFlow from "./PaperFlow";
 
@@ -111,8 +112,10 @@ export default function Shell({ children }: { children: ReactNode }) {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const a = (e.target as HTMLElement | null)?.closest?.("a");
       if (!a) return;
-      const href = a.getAttribute("href");
-      if (!href || !href.startsWith("/") || a.getAttribute("target") === "_blank") return;
+      /* the page shows a link as `/hub/careers`; the router wants `/careers` */
+      const attr = a.getAttribute("href");
+      if (!attr || !attr.startsWith("/") || a.getAttribute("target") === "_blank") return;
+      const href = toRoute(attr);
       /* A line that fills before it leaves (see LinkRow) keeps its own click:
          the room runs to the end first, then it asks for the jump below. */
       if (a.hasAttribute("data-hold")) return;
@@ -387,7 +390,7 @@ export default function Shell({ children }: { children: ReactNode }) {
         <Link className="bar-mark" href="/" aria-label="NOBÉL — home">
           <span className="ink">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/nobel.svg" alt="NOBÉL" width={214} height={117} />
+            <img src={asset("/assets/nobel.svg")} alt="NOBÉL" width={214} height={117} />
           </span>
           <span className="sub">INTERIOR ARCHITECTURE</span>
         </Link>
@@ -426,7 +429,7 @@ export default function Shell({ children }: { children: ReactNode }) {
         <span className="veil-wash" />
         <span className="veil-edge" />
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="veil-mark" src="/assets/nobel.svg" alt="" width={214} height={117} />
+        <img className="veil-mark" src={asset("/assets/nobel.svg")} alt="" width={214} height={117} />
       </div>
 
       {children}

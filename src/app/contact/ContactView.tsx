@@ -31,7 +31,7 @@ export default function ContactView() {
               <LinkRow
                 key={o.id}
                 index={k}
-                href={`/contact/${o.id}/`}
+                href={`/contact/${o.id}`}
                 thumb={o.thumb}
                 meta={
                   <>

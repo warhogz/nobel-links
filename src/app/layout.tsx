@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import Shell from "@/components/Shell";
 import { SITE } from "@/lib/config";
+import { asset } from "@/lib/base";
 import "./globals.css";
 
 /* The main site's own file of Nunito Sans, in the one weight the studio's face
@@ -28,27 +29,22 @@ const display = localFont({
 
 export const metadata: Metadata = {
   /* og:image has to resolve absolutely — messengers refuse relative preview
-     images. NEXT_PUBLIC_SITE_URL wins if it is set; otherwise Vercel says at
-     build time which address the production deployment answers on. */
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ??
-      (process.env.VERCEL_PROJECT_PRODUCTION_URL
-        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-        : "https://www.nobel-la.com"),
-  ),
+     images — and against the address people actually share: the main site,
+     which serves this one under /hub. NEXT_PUBLIC_SITE_URL overrides it. */
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://nobeldesignstudio.com"),
   title: SITE.title,
   description: SITE.lede,
   applicationName: "NOBÉL",
-  manifest: "/manifest.webmanifest",
+  manifest: asset("/manifest.webmanifest"),
   icons: {
-    icon: "/assets/favicon-64.png",
-    apple: "/assets/icon-180.png",
+    icon: asset("/assets/favicon-64.png"),
+    apple: asset("/assets/icon-180.png"),
   },
   openGraph: {
     type: "website",
     title: SITE.title,
     description: SITE.tagline,
-    images: ["/assets/og.jpg"],
+    images: [asset("/assets/og.jpg")],
   },
   twitter: { card: "summary_large_image" },
 };

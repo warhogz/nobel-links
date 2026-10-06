@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { asset } from "@/lib/base";
 
 /**
  * The city behind an office screen. It fills the top of the page and dissolves
@@ -113,13 +114,13 @@ export default function CityFilm({ id, city, tint }: { id: string; city: string;
         loop
         playsInline
         preload="auto"
-        poster={`/assets/city/${id}.webp`}
+        poster={asset(`/assets/city/${id}.webp`)}
         aria-label={city}
       >
-        <source src={`/assets/city/${id}.mp4`} type="video/mp4" />
+        <source src={asset(`/assets/city/${id}.mp4`)} type="video/mp4" />
       </video>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className="film-still" src={`/assets/city/${id}.webp`} alt="" aria-hidden="true" />
+      <img className="film-still" src={asset(`/assets/city/${id}.webp`)} alt="" aria-hidden="true" />
       <div className="film-veil" />
     </div>
   );

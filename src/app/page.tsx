@@ -11,9 +11,9 @@ const ACTIONS: { label: string; href: string; arrow: ArrowDirection }[] = [
   { label: "Company Overview", href: SITE.overview, arrow: "up-right" },
   { label: "Our Website", href: SITE.main, arrow: "up-right" },
   { label: "Instagram", href: SITE.instagram, arrow: "up-right" },
-  { label: "Projects on YouTube", href: "/projects/", arrow: "right" },
-  { label: "Careers", href: "/careers/", arrow: "right" },
-  { label: "Contact Us", href: "/contact/", arrow: "right" },
+  { label: "Projects on YouTube", href: "/projects", arrow: "right" },
+  { label: "Careers", href: "/careers", arrow: "right" },
+  { label: "Contact Us", href: "/contact", arrow: "right" },
 ];
 
 /** a word's slot in the sequence, and which side it opens from */
