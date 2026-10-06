@@ -43,21 +43,29 @@ let elapsed = 0;
 let reduced: MediaQueryList | null = null;
 
 /*
- * How tall the screen really is. Not `innerHeight`: on an iPhone that stops at
- * the top of Safari's own bottom bar, and the bar is glass — the page goes on
- * underneath it, and a room drawn only to `innerHeight` left a band of its
- * flat fallback ground showing through the bar under an open position. The
- * large viewport (`100lvh`) is the whole of what can be seen. Measured off a
- * probe on a resize rather than every frame: it is a layout read.
+ * How far down the screen can be seen — which is not `innerHeight`. On an
+ * iPhone Safari's bottom bar is glass and the page goes on underneath it, and
+ * past the window altogether: below the large viewport there is still the
+ * band under the bar and the home indicator, showing whatever the page has
+ * there. A room drawn only to the window left that band in its flat fallback
+ * ground under an open position. So the room is drawn to the large viewport,
+ * plus the bottom inset and the height of the bar that folds away — the most
+ * of the page Safari can ever put on the glass. Measured off probes on a
+ * resize rather than every frame: they are layout reads.
  */
 let screenHeight = 0;
 const measureScreen = () => {
-  const probe = document.createElement("div");
-  probe.style.cssText = "position:absolute;top:0;left:0;width:0;height:100lvh;visibility:hidden;pointer-events:none";
-  document.body.appendChild(probe);
-  const lvh = probe.getBoundingClientRect().height;
-  probe.remove();
-  screenHeight = Math.max(window.innerHeight, lvh);
+  const probe = (height: string) => {
+    const el = document.createElement("div");
+    el.style.cssText = `position:absolute;top:0;left:0;width:0;height:${height};visibility:hidden;pointer-events:none`;
+    document.body.appendChild(el);
+    const h = el.getBoundingClientRect().height;
+    el.remove();
+    return h;
+  };
+  const lvh = probe("100lvh");
+  const below = probe("env(safe-area-inset-bottom, 0px)") + probe("calc(100lvh - 100svh)");
+  screenHeight = Math.max(window.innerHeight, lvh) + below;
 };
 const onResize = () => {
   screenHeight = 0;
